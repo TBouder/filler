@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/06 19:01:14 by tbouder           #+#    #+#             */
-/*   Updated: 2016/04/06 19:58:06 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/04/12 11:32:45 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,13 @@ typedef struct		s_fill
 	struct s_fill	*prev;
 }					t_fill;
 
-void			ft_fillend(char *s, t_fill **fill, int id);
+typedef struct		s_env
+{
+	int				p_nb;
+	char			*p_name
+}					t_env;
+
+void				ft_fillend(char *s, t_fill **fill, int id);
 
 
 #endif

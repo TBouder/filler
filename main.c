@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/06 19:00:58 by tbouder           #+#    #+#             */
-/*   Updated: 2016/04/06 21:52:58 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/04/12 11:09:53 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void		ft_extract_map(char *s, t_fill **map)
 	i++;
 }
 
-int		main(int ac, char **av)
+int				main(int ac, char **av)
 {
 	int		fd;
 	t_fill	*map;
@@ -42,7 +42,6 @@ int		main(int ac, char **av)
 		while (get_next_line(fd, &s) == 1)
 			ft_extract_map(s, &map);
 		ft_strdel(&s);
-		
 		ft_print_map(map);
 	}
 	return (0);
