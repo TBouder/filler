@@ -6,21 +6,11 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/04/06 19:00:58 by tbouder           #+#    #+#             */
-/*   Updated: 2016/04/12 12:07:29 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/04/12 12:37:15 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
-
-static int		ft_word_len(char *str)
-{
-	int		i;
-
-	i = 0;
-	while (!ft_isspace(str[i]))
-		i++;
-	return (i);
-}
 
 static void		ft_print_map(t_fill *map)
 {
@@ -39,64 +29,67 @@ static void		ft_extract_map(char *s, t_fill **map)
 	i++;
 }
 
-static void		ft_extract_player(char *name, char *s, t_env *env, int id)
+static int		ft_extract_player_helper(char *name, char *s)
 {
-	int		len;
 	int		i;
 
-	s += 9;
 	i = 0;
-	len = ft_word_len(s);
-	if (id == 0)
-		env->p1 = ft_strnew(len + 1);
-	else
-		env->p2 = ft_strnew(len + 1);
-	while (!ft_isspace(s[i]))
-	{
-		if (id == 0)
-			env->p1[i] = s[i];
-		else
-			env->p2[i] = s[i];
-		env->p_id = id;
-		i++;
-	}
-	s += i;
-	s += 4;
-	i = 0;
-	while (s[i] != ']')
+	s += 15;
+	while (s[i] && s[i] != ']')
 	{
 		while (name[i] == s[i])
 			i++;
 		if (s[i] == ']')
-			ft_putendl("OK");
-		else
-			ft_putendl("KO");
+			return (1);
+		i++;
 	}
-	ft_putendl(s);
+	return (0);
+}
+
+static int		ft_extract_player(int fd, char *name, t_env *env)
+{
+	char	*s;
+	int		p1;
+	int		p2;
+
+	p1 = 0;
+	p2 = 0;
+	if (get_next_line(fd, &s) == 1)
+		p1 = ft_extract_player_helper(name, s);
+	if (get_next_line(fd, &s) == 1)
+		p2 = ft_extract_player_helper(name, s);
+	if (p2 == p1)
+		return (0);
+	else
+	{
+		if (p1)
+			env->p_id = 1;
+		if (p2)
+			env->p_id = 2;
+	}
+	return (1);
 }
 
 int				main(int ac, char **av)
 {
 	int		fd;
 	t_fill	*map;
-	t_env	env;
+	t_env	*env;
 	char	*s;
 
 	map = NULL;
+	env = malloc(sizeof(env));
 	fd = open(av[1], O_RDONLY);
 	if (ac == 2 && fd != -1)
 	{
-		if (get_next_line(fd, &s) == 1)
-			ft_extract_player(av[0], s, &env, 0);
-		if (get_next_line(fd, &s) == 1)
-			ft_extract_player(av[0], s, &env, 1);
-
+		ft_extract_player(fd, av[0], env);
 		while (get_next_line(fd, &s) == 1)
 			ft_extract_map(s, &map);
 		ft_strdel(&s);
-
-		ft_putendl(env.p1);
-		ft_putendl(env.p2);
+		env->p_name = ft_strnew(ft_strlen(av[0]));
+		ft_strcpy(env->p_name, av[0]);
+		ft_nbrendl(env->p_id);
+		ft_putendl(env->p_name);
 		ft_print_map(map);
 	}
 	return (0);
