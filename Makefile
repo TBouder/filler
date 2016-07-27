@@ -6,16 +6,16 @@
 #    By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/03 15:48:47 by tbouder           #+#    #+#              #
-#    Updated: 2016/04/06 20:00:22 by tbouder          ###   ########.fr        #
+#    Updated: 2016/07/27 11:51:39 by tbouder          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME 		= 	filler
+NAME 		= 	tbouder.filler
 
 CC			= 	gcc
 CFLAGS		= 	-Wall -Werror -Wextra
 
-SRC 		= 	main.c ft_fill_struct.c
+SRC 		= 	main.c
 
 LIB			=	-Llibft -lft
 
