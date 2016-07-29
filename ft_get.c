@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_extract.c                                       :+:      :+:    :+:   */
+/*   ft_get.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/07/29 17:17:07 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/07/29 19:36:31 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void		ft_get_map_size(t_env *env, char *str)
 		env->map_size_y = ft_atoi(split[1]);
 		env->map_size_x = ft_atoi(split[2]);
 		env->map = ft_dbmalloc(env->map_size_x, env->map_size_y);
+		ft_find_middle(env);
 		env->phase = 2;
 	}
 }
