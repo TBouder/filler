@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/07/29 19:36:31 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/01 18:50:18 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void		ft_get_board(t_env *env, char *str, int y)
 	i = 0;
 	while (!ft_isspace(str[x]))
 		x++;
-	while (ft_isspace(str[x]))
+	while (ft_isspace(str[x]) || ft_isnumber(str[x]))
 		x++;
 	while (i < env->map_size_x)
 	{
