@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/02 12:45:38 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/02 18:48:20 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void		ft_debug(t_env *env)
 	int		fd;
 	int		i;
 
-	fd = open("debug", O_WRONLY);
+	fd = open("debug", O_WRONLY|O_APPEND);
 	i = 0;
 	ft_putstr_fd("O or X : ", fd);ft_putchar_fd(env->letter, fd); ft_putchar_fd('\n', fd);
 	ft_putstr_fd("Map X : ", fd);ft_putnbr_fd(env->map_size_x, fd); ft_putchar_fd('\n', fd);
@@ -52,6 +52,7 @@ void		ft_debug(t_env *env)
 		ft_putchar_fd('[', fd); ft_putstr_fd(env->piece[i], fd); ft_putendl_fd("]", fd);
 		i++;
 	}
+	ft_putstr_fd("\n\n", fd);
 	close(fd);
 }
 
@@ -140,153 +141,129 @@ int			ft_detail_piece(t_env *env)
 	return (nb);
 }
 
-int		**ft_test(t_env *env)
+int			ft_isletter(t_env *env, int x, int y)
 {
-	int		**r_value;
-	int		i;
-	int		y;
-	int		x;
-	int		nb_elem;
-
-	i = 0;
-	nb_elem = ft_detail_piece(env);
-
-	r_value = (int **)malloc(sizeof(int *) * nb_elem);
-	while (i < nb_elem)
+	if (x > env->map_size_x || y > env->map_size_y)
+		return (0);
+	if (env->letter == 'O')
 	{
-		r_value[i] = (int *)malloc(sizeof(int) * 2);
-		i++;
+		if (env->map[y][x] == 'o' || env->map[y][x] == 'O')
+			return (1);
 	}
-
-	i = 0;
-	y = 0;
-	while (y < env->piece_size_y)
+	else if (env->letter == 'X')
 	{
-		x = 0;
-		while (x < env->piece_size_x)
-		{
-			if (env->piece[y][x] == '*')
-			{
-				r_value[i][0] = y;
-				r_value[i][1] = x;
-				i++;
-			}
-			x++;
-		}
-		y++;
+		if (env->map[y][x] == 'x' || env->map[y][x] == 'X')
+			return (1);
 	}
-	return (r_value);
+	return (0);
 }
 
-int		ft_algo_pos_possibilities(t_env *env, t_fill_current current_env, int base_x, int base_y)
+int			*ft_check_if_match(t_env *env, int x, int y)
 {
-	int		x;
-	int		y;
-	int		fusion_one;
+	int		x_piece;
+	int		y_piece;
+	int		one_letter;
 	int		error;
+	int		*value;
 
-	fusion_one = 0;
+	value = ft_nbrnew(2);
+	y_piece = 0;
+	one_letter = 0;
 	error = 0;
-	//Vertical, down, right
-	if ((current_env.orientation == -1 || current_env.orientation == 0) && current_env.pos_y == -1 && current_env.pos_x == 1)
+
+	int fd = open("debug", O_WRONLY|O_APPEND);
+	while (y_piece < env->piece_size_y)
 	{
-		x = 0;
-		while (x < env->piece_size_x)
+		x_piece = 0;
+		while (x_piece < env->piece_size_x)
 		{
-			y = 0;
-			while (y < env->piece_size_y)
-			{
-				if (env->map[base_y - y][base_x + x] == 'o' || env->map[base_y - y][base_x + x] == 'O')
-					fusion_one++;
-				if (env->map[base_y - y][base_x + x] == 'x' || env->map[base_y - y][base_x + x] == 'X')
-					error++;
-				if (fusion_one > 1 || error != 0)
-					break ;
-				y++;
-			}
-			if (fusion_one > 1 || error != 0)
-				break ;
-			x++;
-		}
-		if (fusion_one == 1 && error == 0)
-			return (0);
-		else
-			return (1);
-	}
+			// La case de la piece
+			ft_putstr_fd("Test : [", fd);ft_putnbr_fd(y_piece, fd);ft_putchar_fd('-', fd); ft_putnbr_fd(x_piece, fd);ft_putstr_fd("]", fd);
 
-	//Horizontal, down, right
-	if ((current_env.orientation == 1 || current_env.orientation == 0) && current_env.pos_y == -1 && current_env.pos_x == 1)
+			// La case sur la map
+			ft_putstr_fd(" -- [", fd);ft_putnbr_fd(y + y_piece, fd);ft_putchar_fd('-', fd); ft_putnbr_fd(x + x_piece, fd);ft_putstr_fd("]", fd);
+			if (ft_isletter(env, x + x_piece, y + y_piece) == 1 && env->piece[y_piece][x_piece] == '*')
+
+			// ft_putstr_fd(" -- [", fd);ft_putnbr_fd(y, fd);ft_putchar_fd('-', fd); ft_putnbr_fd(x, fd);ft_putstr_fd("]", fd);
+			// if (ft_isletter(env, x, y) == 1 && env->piece[y_piece][x_piece] == '*')
+			{
+				ft_putstr_fd(" (OK)", fd);
+				value[0] = x + x_piece;
+				value[1] = y + y_piece;
+				one_letter++;
+			}
+			else if (ft_isletter(env, x + x_piece, y + y_piece) == 1 && env->piece[y_piece][x_piece] == '.')
+			{
+				ft_putstr_fd(" (Empty)", fd);
+				;
+			}
+			else if (env->map[y + y_piece][x + x_piece] != '.')
+			{
+				ft_putstr_fd(" (Error)", fd);
+				error++;
+			}
+			x_piece++;
+			ft_putstr_fd("\n", fd);
+
+		}
+		y_piece++;
+	}
+	if (one_letter == 1 && error == 0)
 	{
-		x = 0;
-		while (x < env->piece_size_x)
-		{
-			y = 0;
-			while (y < env->piece_size_y)
-			{
-				if (env->map[base_y + y][base_x + x] == 'o' || env->map[base_y + y][base_x + x] == 'O')
-					fusion_one++;
-				if (env->map[base_y + y][base_x + x] == 'x' || env->map[base_y + y][base_x + x] == 'X')
-					error++;
-				if (fusion_one > 1 || error != 0)
-					break ;
-				y++;
-			}
-			if (fusion_one > 1 || error != 0)
-				break ;
-			x++;
-		}
-		if (fusion_one == 1 && error == 0)
-			return (0);
-		else
-			return (1);
+		ft_putstr_fd("GOOD : [", fd); ft_putnbr_fd(value[1], fd); ft_putstr_fd(" - ", fd); ft_putnbr_fd(value[0], fd); ft_putstr_fd("]\n", fd);
+		return (value);
 	}
-	// if (current_env.orientation == -1 && current_env.pos_y == -1 && current_env.pos_x == -1);//Vertical, down, left
-	// if (current_env.orientation == -1 && current_env.pos_y == 1 && current_env.pos_x == -1);//Vertical, top, left
-	// if (current_env.orientation == -1 && current_env.pos_y == 1 && current_env.pos_x == 1);//Vertical, top, right
+	ft_putnbr_fd(error, fd);
+	ft_putstr_fd("\nBAD\n", fd);
+	return (NULL);
 
-	// if (current_env.orientation == 1 && current_env.pos_y == -1 && current_env.pos_x == -1);//Horizontal, down, left
-	// if (current_env.orientation == 1 && current_env.pos_y == 1 && current_env.pos_x == -1);//Horizontal, top, left
-	// if (current_env.orientation == 1 && current_env.pos_y == 1 && current_env.pos_x == 1);//Horizontal, top, right
-
-	// if (current_env.orientation == 0 && current_env.pos_y == -1 && current_env.pos_x == -1);//Cube, down, left
-	// if (current_env.orientation == 0 && current_env.pos_y == 1 && current_env.pos_x == -1);//Cube, top, left
-	// if (current_env.orientation == 0 && current_env.pos_y == 1 && current_env.pos_x == 1);//Cube, top, right
-	return (1);
+	close(fd);
 }
 
-void		ft_algo_clear(t_env *env)
+int			ft_algo(t_env *env)
 {
 	int				x;
 	int				y;
+	int				*value;
 	t_fill_current	current_env;
 
-	x = 0;
 	y = 0;
 	current_env.orientation = ft_hori_verti(env);
 	current_env.nb_elem_piece = ft_detail_piece(env);
+	int fd = open("debug", O_WRONLY|O_APPEND);
 
 	while (y < env->map_size_y)
 	{
 		x = 0;
 		while (x < env->map_size_x)
 		{
-			if (env->map[y][x] == 'o' || env->map[y][x] == 'O')
+			if (ft_isletter(env, x, y) == 1)
 			{
-				current_env.pos_x = ft_pos_cmp_middle_x(env, x);
-				current_env.pos_y = ft_pos_cmp_middle_y(env, y);
-				// ft_debug2(current_env);
-				int fd = open("debug", O_WRONLY);
-				if (ft_algo_pos_possibilities(env, current_env, x, y) == 0)
+				value = ft_check_if_match(env, x, y);
+				if (value != NULL)
 				{
-					ft_putnbr_fd(y, fd); ft_putchar_fd(' ', fd); ft_putnbr_fd(x, fd);ft_putchar_fd('\n', fd);
-					ft_putnbr(y); ft_putchar(' '); ft_putnbr(x);ft_putchar('\n');
+					// ft_putnbr(y + value[1]);
+					ft_putnbr(value[1]);
+					ft_putchar(' ');
+					// ft_putnbr(x + value[0]);
+					ft_putnbr(value[0]);
+					ft_putchar('\n');
+					free(value);
+					return (1);
 				}
-				close(fd);
+				else
+				{
+					ft_putstr_fd("NOP", fd);
+				}
+
+				// current_env.pos_x = ft_pos_cmp_middle_x(env, x);
+				// current_env.pos_y = ft_pos_cmp_middle_y(env, y);
 			}
 			x++;
 		}
 		y++;
 	}
+	return (0);
 }
 
 void		ft_launcher(t_env *env)
@@ -299,31 +276,43 @@ void		ft_launcher(t_env *env)
 	y2 = 0;
 	env->phase = 0;
 
+	int fd = open("debug", O_WRONLY|O_APPEND);
 	while (get_next_line(0, &str))
 	{
-		if (env->phase == 0)
+		// ft_putendl_fd(str, fd);
+
+		if (ft_isstrstr(str, "$$$ exec "))
 			ft_get_player(env, str);
-		else if (env->phase == 1)
+
+		else if (ft_isstrstr(str, "Plateau"))
 			ft_get_map_size(env, str);
+
 		else if (env->phase == 2)
 		{
 			if (y1 == 0)
 				get_next_line(0, &str);
 			ft_get_board(env, str, y1++);
 		}
-		else if (env->phase == 3)
-			ft_get_piece_size(env, str);
-		else if (env->phase == 4)
+
+		else if (ft_isstrstr(str, "Piece"))
 		{
-			ft_get_piece(env, str, y2++);
-			// ft_debug(env);
-			// ft_algo(env);
-			ft_algo_clear(env);
+			y1 = 0;
+			ft_get_piece_size(env, str);
 		}
-		// else if (env->phase == 5)
-			// env->phase = 1;
+
+		else if (env->phase == 4)
+			ft_get_piece(env, str, y2++);
+		if (env->phase == 5)
+		{
+			y2 = 0;
+			// ft_debug(env);
+			ft_algo(env);
+		}
+
+
 	}
 	ft_strdel(&str);
+	close(fd);
 }
 
 int			main(void)
