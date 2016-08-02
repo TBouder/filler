@@ -6,7 +6,7 @@
 /*   By: ebouther <ebouther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 19:26:23 by ebouther          #+#    #+#             */
-/*   Updated: 2016/08/01 18:42:43 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/02 11:47:18 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,15 @@ typedef struct	s_env
 
 	char	letter;
 }				t_env;
+
+typedef struct	s_fill_current
+{
+	int		pos_x;
+	int		pos_y;
+
+	int		orientation;
+	int		nb_elem_piece;
+}				t_fill_current;
 
 char			**ft_dbmalloc(int x, int y);
 void			ft_find_middle(t_env *env);

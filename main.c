@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/01 18:48:40 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/02 12:45:38 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,25 @@ void		ft_debug(t_env *env)
 	close(fd);
 }
 
+void		ft_debug2(t_fill_current current_env)
+{
+	int fd = open("debug", O_WRONLY);
+
+	current_env.pos_y == 1 ? ft_putstr_fd("POS Y : TOP\n", fd) : ft_putstr_fd("POS Y : DOWN\n", fd);
+	current_env.pos_x == 1 ? ft_putstr_fd("POS X : RIGHT\n", fd) : ft_putstr_fd("POS X : LEFT\n", fd);
+
+	if (current_env.orientation == 1)
+		ft_putstr_fd("PIECE HORIZONTALE\n", fd);
+	else if (current_env.orientation == -1)
+		ft_putstr_fd("PIECE VERTICALE\n", fd);
+	else
+		ft_putstr_fd("PIECE EGALE\n", fd);
+
+	ft_putstr_fd("NB ElEM PIECE : ", fd); ft_putnbr_fd(current_env.nb_elem_piece, fd); ft_putchar_fd('\n', fd);
+
+	close(fd);
+}
+
 int			ft_dot_before(char *str, char c)
 {
 	int		i;
@@ -77,8 +96,8 @@ int			ft_hori_verti(t_env *env)
 
 int			ft_pos_cmp_middle_y(t_env *env, int y)
 {
-	// 1 => right
-	// -1 => left
+	// 1 => top
+	// -1 => down
 	if (y > env->middle_y1)
 		return (-1);
 	else if (y < env->middle_y2 && env->middle_y2 != -1)
@@ -89,8 +108,8 @@ int			ft_pos_cmp_middle_y(t_env *env, int y)
 
 int			ft_pos_cmp_middle_x(t_env *env, int x)
 {
-	// 1 => top
-	// -1 => down
+	// 1 => right
+	// -1 => left
 	if (x > env->middle_x1)
 		return (-1);
 	else if (x < env->middle_x2 && env->middle_x2 != -1)
@@ -159,72 +178,114 @@ int		**ft_test(t_env *env)
 	return (r_value);
 }
 
-void		ft_algo(t_env *env)
+int		ft_algo_pos_possibilities(t_env *env, t_fill_current current_env, int base_x, int base_y)
 {
-	int		i;
-	char	*letter;
+	int		x;
+	int		y;
+	int		fusion_one;
+	int		error;
 
-	i = env->map_size_y;
-	letter = ft_strinit("O");
-	while (i > 0)
+	fusion_one = 0;
+	error = 0;
+	//Vertical, down, right
+	if ((current_env.orientation == -1 || current_env.orientation == 0) && current_env.pos_y == -1 && current_env.pos_x == 1)
 	{
-		if (ft_isstrstr(env->map[i], letter))
+		x = 0;
+		while (x < env->piece_size_x)
 		{
-				int fd = open("debug", O_WRONLY);
-/******************************************************************************/
-			int pos_y = ft_pos_cmp_middle_y(env, i);
-			int pos_x = ft_pos_cmp_middle_x(env, i);
-
-			if (pos_y == 1)
-				{ft_putstr_fd("POS Y : TOP", fd); ft_putchar_fd('\n', fd);}
-			else
-				{ft_putstr_fd("POS Y : DOWN", fd); ft_putchar_fd('\n', fd);}
-			if (pos_x == 1)
-				{ft_putstr_fd("POS X : RIGHT", fd); ft_putchar_fd('\n', fd);}
-			else
-				{ft_putstr_fd("POS X : LEFT", fd); ft_putchar_fd('\n', fd);}
-/******************************************************************************/
-			int sens = ft_hori_verti(env);
-
-			if (sens == 1)
-				{ft_putstr_fd("PIECE HORIZONTALE", fd); ft_putchar_fd('\n', fd);}
-			else if (sens == -1)
-				{ft_putstr_fd("PIECE VERTICALE", fd); ft_putchar_fd('\n', fd);}
-			else
-				{ft_putstr_fd("PIECE EGALE", fd); ft_putchar_fd('\n', fd);}
-/******************************************************************************/
-			int	nb_elem_piece = ft_detail_piece(env);
-			int	tmp = 0;
-			int	**all_pieces;
-
-			ft_putstr_fd("NB ElEM PIECE : ", fd); ft_putnbr_fd(nb_elem_piece, fd); ft_putchar_fd('\n', fd);
-			all_pieces = ft_test(env);
-			while (tmp < nb_elem_piece)
+			y = 0;
+			while (y < env->piece_size_y)
 			{
-				ft_putstr_fd("Piece N~", fd); ft_putnbr_fd(tmp, fd); ft_putstr_fd(" : [", fd);
-				ft_putnbr_fd(all_pieces[tmp][0], fd);ft_putstr_fd(" ", fd);ft_putnbr_fd(all_pieces[tmp][1], fd);
-				ft_putstr_fd("]\n", fd);
-				tmp++;
+				if (env->map[base_y - y][base_x + x] == 'o' || env->map[base_y - y][base_x + x] == 'O')
+					fusion_one++;
+				if (env->map[base_y - y][base_x + x] == 'x' || env->map[base_y - y][base_x + x] == 'X')
+					error++;
+				if (fusion_one > 1 || error != 0)
+					break ;
+				y++;
 			}
-			tmp = 0;
-			while (tmp < nb_elem_piece)
-			{
-				ft_putstr_fd("Case N~", fd); ft_putnbr_fd(tmp, fd); ft_putstr_fd(" : [", fd);
-				ft_putchar_fd(env->map[all_pieces[tmp][0]][all_pieces[tmp][1]], fd);
-				ft_putstr_fd("]\n", fd);
-				tmp++;
-			}
-/******************************************************************************/
-			ft_putstr_fd("POS : ", fd); ft_putnbr_fd(i - 1, fd); ft_putchar_fd(' ', fd); ft_putnbr_fd(ft_dot_before(env->map[i], 'X'), fd); ft_putchar_fd('\n', fd);
-
-			close(fd);
-
-			// ft_putnbr(i - 1);
-			// ft_putchar(' ');
-			// ft_nbrendl(ft_dot_before(env->map[i], 'X'));
-
+			if (fusion_one > 1 || error != 0)
+				break ;
+			x++;
 		}
-		i--;
+		if (fusion_one == 1 && error == 0)
+			return (0);
+		else
+			return (1);
+	}
+
+	//Horizontal, down, right
+	if ((current_env.orientation == 1 || current_env.orientation == 0) && current_env.pos_y == -1 && current_env.pos_x == 1)
+	{
+		x = 0;
+		while (x < env->piece_size_x)
+		{
+			y = 0;
+			while (y < env->piece_size_y)
+			{
+				if (env->map[base_y + y][base_x + x] == 'o' || env->map[base_y + y][base_x + x] == 'O')
+					fusion_one++;
+				if (env->map[base_y + y][base_x + x] == 'x' || env->map[base_y + y][base_x + x] == 'X')
+					error++;
+				if (fusion_one > 1 || error != 0)
+					break ;
+				y++;
+			}
+			if (fusion_one > 1 || error != 0)
+				break ;
+			x++;
+		}
+		if (fusion_one == 1 && error == 0)
+			return (0);
+		else
+			return (1);
+	}
+	// if (current_env.orientation == -1 && current_env.pos_y == -1 && current_env.pos_x == -1);//Vertical, down, left
+	// if (current_env.orientation == -1 && current_env.pos_y == 1 && current_env.pos_x == -1);//Vertical, top, left
+	// if (current_env.orientation == -1 && current_env.pos_y == 1 && current_env.pos_x == 1);//Vertical, top, right
+
+	// if (current_env.orientation == 1 && current_env.pos_y == -1 && current_env.pos_x == -1);//Horizontal, down, left
+	// if (current_env.orientation == 1 && current_env.pos_y == 1 && current_env.pos_x == -1);//Horizontal, top, left
+	// if (current_env.orientation == 1 && current_env.pos_y == 1 && current_env.pos_x == 1);//Horizontal, top, right
+
+	// if (current_env.orientation == 0 && current_env.pos_y == -1 && current_env.pos_x == -1);//Cube, down, left
+	// if (current_env.orientation == 0 && current_env.pos_y == 1 && current_env.pos_x == -1);//Cube, top, left
+	// if (current_env.orientation == 0 && current_env.pos_y == 1 && current_env.pos_x == 1);//Cube, top, right
+	return (1);
+}
+
+void		ft_algo_clear(t_env *env)
+{
+	int				x;
+	int				y;
+	t_fill_current	current_env;
+
+	x = 0;
+	y = 0;
+	current_env.orientation = ft_hori_verti(env);
+	current_env.nb_elem_piece = ft_detail_piece(env);
+
+	while (y < env->map_size_y)
+	{
+		x = 0;
+		while (x < env->map_size_x)
+		{
+			if (env->map[y][x] == 'o' || env->map[y][x] == 'O')
+			{
+				current_env.pos_x = ft_pos_cmp_middle_x(env, x);
+				current_env.pos_y = ft_pos_cmp_middle_y(env, y);
+				// ft_debug2(current_env);
+				int fd = open("debug", O_WRONLY);
+				if (ft_algo_pos_possibilities(env, current_env, x, y) == 0)
+				{
+					ft_putnbr_fd(y, fd); ft_putchar_fd(' ', fd); ft_putnbr_fd(x, fd);ft_putchar_fd('\n', fd);
+					ft_putnbr(y); ft_putchar(' '); ft_putnbr(x);ft_putchar('\n');
+				}
+				close(fd);
+			}
+			x++;
+		}
+		y++;
 	}
 }
 
@@ -245,14 +306,19 @@ void		ft_launcher(t_env *env)
 		else if (env->phase == 1)
 			ft_get_map_size(env, str);
 		else if (env->phase == 2)
+		{
+			if (y1 == 0)
+				get_next_line(0, &str);
 			ft_get_board(env, str, y1++);
+		}
 		else if (env->phase == 3)
 			ft_get_piece_size(env, str);
 		else if (env->phase == 4)
 		{
 			ft_get_piece(env, str, y2++);
-			ft_debug(env);
+			// ft_debug(env);
 			// ft_algo(env);
+			ft_algo_clear(env);
 		}
 		// else if (env->phase == 5)
 			// env->phase = 1;
