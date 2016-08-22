@@ -3,38 +3,74 @@
 /*                                                        :::      ::::::::   */
 /*   filler.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
+/*   By: ebouther <ebouther@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/04/06 19:01:14 by tbouder           #+#    #+#             */
-/*   Updated: 2016/04/12 12:13:08 by tbouder          ###   ########.fr       */
+/*   Created: 2016/02/12 19:26:23 by ebouther          #+#    #+#             */
+/*   Updated: 2016/08/23 00:41:57 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FILLER_H
 # define FILLER_H
-
-# include  <fcntl.h>
 # include "libft/libft.h"
 
-# include <stdio.h>
-# include <string.h>
-# include <errno.h>
-
-typedef struct		s_fill
+typedef struct	s_env
 {
-	int				line_id;
-	char			*content;
-	struct s_fill	*next;
-	struct s_fill	*prev;
-}					t_fill;
+	int		phase;
 
-typedef struct		s_env
+	char	**map;
+	int		map_size_x;
+	int		map_size_y;
+
+	int		middle_x1;
+	int		middle_y1;
+	int		middle_x2;
+	int		middle_y2;
+
+	char	**piece;
+	int		piece_size_x;
+	int		piece_size_y;
+
+	char	letter;
+}				t_env;
+
+typedef struct	s_fill_current
 {
-	int				p_id;
-	char			*p_name;
-}					t_env;
+	int		pos_x;
+	int		pos_y;
 
-void				ft_fillend(char *s, t_fill **fill, int id);
+	int		orientation;
+	int		nb_elem_piece;
+}				t_fill_current;
+
+
+/*
+** Some Tools
+*/
+// char			**ft_dbmalloc(int x, int y);
+// void			ft_find_middle(t_env *env);
+// int				ft_isletter(t_env *env, int x, int y);
+// int				ft_detail_piece(t_env *env);
+//
+// /*
+// ** Get infos from VM
+// */
+// void			ft_get_player(t_env *env, char *str);
+// void			ft_get_map_size(t_env *env, char *str);
+// void			ft_get_board(t_env *env, char *str, int y);
+// void			ft_get_piece_size(t_env *env, char *str);
+// void			ft_get_piece(t_env *env, char *str, int y);
+//
+// /*
+// ** Some details about the pos
+// */
+// int				ft_hori_verti(t_env *env);
+// int				ft_pos_cmp_middle_y(t_env *env, int y);
+// int				ft_pos_cmp_middle_x(t_env *env, int x);
+//
+// //DEBUG
+// void			ft_debug(t_env *env);
+// void			ft_debug2(t_fill_current current_env);
 
 
 #endif
