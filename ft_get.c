@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/13 10:43:22 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/24 15:43:25 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,28 +32,33 @@ void		ft_get_map_size(t_env *env, char *str)
 	env->map_size_x = ft_atoi(split[2]);
 	env->map = ft_dbmalloc(env->map_size_x, env->map_size_y);
 	ft_find_middle(env);
+
 	env->phase = 2;
 }
 
-void		ft_get_board(t_env *env, char *str, int y)
+void		ft_get_board(t_env *env, char *str)
 {
 	int		i;
 	int		x;
+	int		y;
 
-	x = 0;
-	i = 0;
-	while (!ft_isspace(str[x]))
-		x++;
-	while (ft_isspace(str[x]) || ft_isnumber(str[x]))
-		x++;
-	while (i < env->map_size_x)
+	y = 0;
+	while (y < env->map_size_y)
 	{
-		env->map[y][i] = str[x];
-		x++;
-		i++;
+		x = 0;
+		i = 0;
+		get_next_line(0, &str);
+		while (ft_isspace(str[x]) || ft_isnumber(str[x]))
+			x++;
+		while (i < env->map_size_x)
+		{
+			env->map[y][i] = str[x];
+			x++;
+			i++;
+		}
+		y++;
 	}
-	if (y == env->map_size_y - 1)
-		env->phase = 3;
+	env->phase = 3;
 }
 
 void		ft_get_piece_size(t_env *env, char *str)
@@ -70,16 +75,22 @@ void		ft_get_piece_size(t_env *env, char *str)
 	env->phase = 4;
 }
 
-void		ft_get_piece(t_env *env, char *str, int y)
+void		ft_get_piece(t_env *env, char *str)
 {
 	int		x;
+	int		y;
 
-	x = 0;
-	while (x < env->piece_size_x)
+	y = 0;
+	while (y < env->piece_size_y)
 	{
-		env->piece[y][x] = str[x];
-		x++;
+		x = 0;
+		get_next_line(0, &str);
+		while (x < env->piece_size_x)
+		{
+			env->piece[y][x] = str[x];
+			x++;
+		}
+		y++;
 	}
-	if (y == env->piece_size_y - 1)
-		env->phase = 5;
+	env->phase = 5;
 }

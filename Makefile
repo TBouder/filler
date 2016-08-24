@@ -6,7 +6,7 @@
 #    By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2015/12/03 15:48:47 by tbouder           #+#    #+#              #
-#    Updated: 2016/08/23 00:41:50 by tbouder          ###   ########.fr        #
+#    Updated: 2016/08/23 16:43:39 by tbouder          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,7 +15,7 @@ NAME 		= 	tbouder.filler
 CC			= 	gcc
 CFLAGS		= 	-Wall -Werror -Wextra
 
-SRC 		= 	main.c #ft_get.c ft_tools.c ft_debug.c ft_pos_infos.c
+SRC 		= 	main.c ft_get.c ft_tools.c ft_debug.c ft_pos_infos.c
 
 LIB			=	libft/libft.a
 
