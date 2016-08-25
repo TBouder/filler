@@ -1,5 +1,5 @@
-seed = 7433
-O: error on input
-vm/players/hcao.filler won
+seed = 8579
+O: timedout
+./tbouder.filler won
 Score:
-0AGAINST0
+96AGAINST83
