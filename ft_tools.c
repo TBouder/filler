@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:19:43 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/13 10:57:54 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/26 18:09:23 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,14 @@ int			ft_isletter(t_env *env, int x, int y)
 {
 	if (x > env->map_size_x || y > env->map_size_y)
 		return (-1);
-	if (env->letter == 'O')
+	if (env->letter_player == 'O')
 	{
 		if (env->map[y][x] == 'o' || env->map[y][x] == 'O')
 			return (1);
 		else if (env->map[y][x] == 'x' || env->map[y][x] == 'X')
 			return (2);
 	}
-	else if (env->letter == 'X')
+	else if (env->letter_player == 'X')
 	{
 		if (env->map[y][x] == 'x' || env->map[y][x] == 'X')
 			return (1);

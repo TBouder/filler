@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/08/13 10:44:00 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/13 10:44:19 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/26 18:09:21 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void		ft_debug(t_env *env)
 
 	fd = open("debug", O_WRONLY|O_APPEND);
 	i = 0;
-	ft_putstr_fd("O or X : ", fd);ft_putchar_fd(env->letter, fd); ft_putchar_fd('\n', fd);
+	ft_putstr_fd("O or X : ", fd);ft_putchar_fd(env->letter_player, fd); ft_putchar_fd('\n', fd);
 	ft_putstr_fd("Map X : ", fd);ft_putnbr_fd(env->map_size_x, fd); ft_putchar_fd('\n', fd);
 	ft_putstr_fd("Map Y : ", fd);ft_putnbr_fd(env->map_size_y, fd); ft_putchar_fd('\n', fd);
 

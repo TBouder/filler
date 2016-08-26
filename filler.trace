@@ -1,5 +1,7 @@
-seed = 8579
-O: timedout
-./tbouder.filler won
+seed = 5303
+O: error on input
+./tbouder.filler: Segfault at 2
+X: error on input
+vm/players/hcao.filler won
 Score:
-96AGAINST83
+2AGAINST5

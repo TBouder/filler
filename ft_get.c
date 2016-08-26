@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/24 23:34:53 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/26 18:09:22 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,15 @@
 void		ft_get_player(t_env *env, char *str)
 {
 	if (ft_isstrstr(str, "$$$ exec p1 : ["))
-		env->letter = 'O';
+	{
+		env->letter_player = 'O';
+		env->letter_adv = 'X';
+	}
 	else if (ft_isstrstr(str, "$$$ exec p2 : ["))
-		env->letter = 'X';
+	{
+		env->letter_player = 'X';
+		env->letter_adv = 'O';
+	}
 }
 
 void		ft_get_map_size(t_env *env, char *str)
