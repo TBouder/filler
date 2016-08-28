@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/27 15:32:49 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/28 20:43:15 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,28 +57,36 @@ int			ft_count_total_dots(char **to_look, int size_x, int size_y)
 }
 
 /*
-** The ft_count_line_dots() function will count the number of char [c] in the
-** line y
+** The ft_count_char_line() function will count the consecutive number of char
+** [c] in the line y and return it.
 ** ------------------------------------
 ** ARG -	Take as args the map as [char **], the width as [int] and the line
 **			to test as [int].
-** RET -	Return the number of char [c].
+** RET -	Return the number of consecutive char [c].
 ** ------------------------------------
 */
 int			ft_count_char_line(char **to_look, int size_x, int pos_y, char c)
 {
 	int		count;
+	int		count_buff;
 	int		x;
 
 	count = 0;
+	count_buff = 0;
 	x = 0;
 	while (x < size_x)
 	{
 		if (to_look[pos_y][x] == c)
 			count++;
+		else
+		{
+			if (count > count_buff)
+				count_buff = count;
+			count = 0;
+		}
 		x++;
 	}
-	return (count);
+	return (count > count_buff ? count : count_buff);
 }
 
 
@@ -153,6 +161,8 @@ int			*ft_test(t_env *env, t_coo coo)
 	{
 		while (coo.x_piece >= 0)
 		{
+			if (coo.y_piece + coo.y_map > env->map_size_y || coo.x_piece + coo.x_map > env->map_size_x)
+				break ;
 			/*>>*/	dprintf(fd, "Test : [%d-%d] -- [%d-%d]", coo.y_piece, coo.x_piece, coo.y_piece + coo.y_map, coo.x_piece + coo.x_map);
 			/*>>*/	dprintf(fd, " | On map : [%c]", env->map[coo.y_piece + coo.y_map][coo.x_piece + coo.x_map]);
 			/*>>*/	dprintf(fd, " | Piece : [%c]", env->piece[coo.y_piece][coo.x_piece]);
@@ -163,6 +173,8 @@ int			*ft_test(t_env *env, t_coo coo)
 					if (value && value[0])
 						free(value);
 					/*>>*/dprintf(fd, " (OK) : [%d-%d]", value[1], value[0]);
+					if (one_letter >= 1)
+						return (NULL);
 					one_letter++;
 				}
 			}
@@ -255,7 +267,12 @@ int			*ft_try_piece(t_env *env, int x, int y)
 	coo.x_buff = coo.x_piece;
 	coo.y_buff = coo.y_piece;
 
-	int			dot_line_acceptance_map;
+	int			dot_line_map;
+	int			dot_line_map_char;
+	int			dot_line_map_dot;
+
+	int			dot_line_piece_char;
+	int			dot_line_piece_dot;
 	int			dot_line_piece;
 
 	while (value == NULL)
@@ -264,18 +281,22 @@ int			*ft_try_piece(t_env *env, int x, int y)
 			return (NULL);
 
 		/**********************/
-			//CHANGE IT TO PERFORM THE TESTS ONLY FOR THE CONSECUTIVE DOTS
-			dot_line_acceptance_map = ft_count_char_line(env->map, env->map_size_x, coo.y_map, '.');
-			dot_line_acceptance_map += ft_count_char_line(env->map, env->map_size_x, coo.y_map, env->letter_adv);
-			dot_line_piece = ft_count_char_line(env->piece, env->piece_size_x, coo.y_buff, '.');
-			/*>>*/dprintf(fd, "[%d] vs [%d]\n", dot_line_acceptance_map, dot_line_piece);
-			if (dot_line_acceptance_map < dot_line_piece)
+			dot_line_map_char = ft_count_char_line(env->map, env->map_size_x, coo.y_map, env->letter_adv);
+			dot_line_map_dot = ft_count_char_line(env->map, env->map_size_x, coo.y_map, '.');
+			dot_line_map = dot_line_map_char + dot_line_map_dot;
+
+			dot_line_piece_char = ft_count_char_line(env->piece, env->piece_size_x, coo.y_buff, '*');
+			dot_line_piece_dot = ft_count_char_line(env->piece, env->piece_size_x, coo.y_buff, '.');
+			dot_line_piece = dot_line_piece_char + dot_line_piece_dot;
+
+			/*>>*/dprintf(fd, "[%d] vs [%d] => [%s] vs [%s]\n", dot_line_piece_char, dot_line_map_dot, env->piece[coo.y_buff], env->map[coo.y_map]);
+			if (dot_line_map < dot_line_piece_dot || dot_line_piece_char > dot_line_map_dot)
 			{
 				coo.x_map = x;
 				coo.x_buff = coo.x_piece;
 				coo.y_map--;
 				coo.y_buff--;
-				/*>>*/dprintf(fd, "[DOT_LINE]");
+				/*>>*/dprintf(fd, "[DOT_LINE]\n");
 				continue ;
 			}
 		/**********************/
@@ -305,6 +326,9 @@ int			*ft_try_piece(t_env *env, int x, int y)
 	return (value);
 }
 
+// ADD une fonction avec un index de piece qui va enregistrer la premiere pos de la map tester
+// (Test : [1-2] -- [7-2] => Ici, ce serait la premiere position 7-2), de maniere a la sauter si on
+// retombe dessus
 
 /*
 ** FT_ALGO parcours la map et des que l'on rencontre notre lettre, on test la
