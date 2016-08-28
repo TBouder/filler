@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/28 20:43:15 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/29 00:11:34 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,27 @@ int			ft_count_char_line(char **to_look, int size_x, int pos_y, char c)
 	return (count > count_buff ? count : count_buff);
 }
 
+/*
+** The ft_check_index() function will check if the index as been visited or not
+** ------------------------------------
+** ARG -	Take as args the env as [t_env *], the height as [int] and the line
+**			width [int].
+** RET -	Return 1 if the index is occuped, 0 if not.
+** ------------------------------------
+*/
+int			ft_check_index(t_env *env, int pos_x, int pos_y)
+{
+	if (env->index[pos_y][pos_x] == 1)
+		return (1);
+	else
+	{
+		env->index[pos_y][pos_x] = 1;
+		return (0);
+	}
+}
 
-void		ft_print_map(t_env *env)
+
+void		ft_print_map(t_env *env) //DEBUG FUNCTION
 {
 	int fd = open("debug", O_WRONLY|O_APPEND);
 	int		i = 0;
@@ -157,12 +176,12 @@ int			*ft_test(t_env *env, t_coo coo)
 	value = ft_nbrnew(2);
 	one_letter = 0;
 
-	while (coo.y_piece >= 0)
+	while (coo.y_piece >= 0)//&& coo.x_piece <= env->piece_size_y)
 	{
-		while (coo.x_piece >= 0)
+		while (coo.x_piece >= 0)//&& coo.x_piece <= env->piece_size_x)
 		{
 			if (coo.y_piece + coo.y_map > env->map_size_y || coo.x_piece + coo.x_map > env->map_size_x)
-				break ;
+				break ; //OR RETURN ?
 			/*>>*/	dprintf(fd, "Test : [%d-%d] -- [%d-%d]", coo.y_piece, coo.x_piece, coo.y_piece + coo.y_map, coo.x_piece + coo.x_map);
 			/*>>*/	dprintf(fd, " | On map : [%c]", env->map[coo.y_piece + coo.y_map][coo.x_piece + coo.x_map]);
 			/*>>*/	dprintf(fd, " | Piece : [%c]", env->piece[coo.y_piece][coo.x_piece]);
@@ -266,46 +285,22 @@ int			*ft_try_piece(t_env *env, int x, int y)
 	coo.y_piece = env->piece_size_y - 1;
 	coo.x_buff = coo.x_piece;
 	coo.y_buff = coo.y_piece;
-
-	int			dot_line_map;
-	int			dot_line_map_char;
-	int			dot_line_map_dot;
-
-	int			dot_line_piece_char;
-	int			dot_line_piece_dot;
-	int			dot_line_piece;
+	/*>>*/dprintf(fd, "[TRY PIECE START]\n");
 
 	while (value == NULL)
 	{
 		if (coo.x_map < 0 || coo.y_map < 0 || coo.x_map > env->map_size_x || coo.y_map > env->map_size_y)
+		{
+			/*>>*/dprintf(fd, "[NULL RETURNED => OUT OF MAP]\n");
 			return (NULL);
-
-		/**********************/
-			dot_line_map_char = ft_count_char_line(env->map, env->map_size_x, coo.y_map, env->letter_adv);
-			dot_line_map_dot = ft_count_char_line(env->map, env->map_size_x, coo.y_map, '.');
-			dot_line_map = dot_line_map_char + dot_line_map_dot;
-
-			dot_line_piece_char = ft_count_char_line(env->piece, env->piece_size_x, coo.y_buff, '*');
-			dot_line_piece_dot = ft_count_char_line(env->piece, env->piece_size_x, coo.y_buff, '.');
-			dot_line_piece = dot_line_piece_char + dot_line_piece_dot;
-
-			/*>>*/dprintf(fd, "[%d] vs [%d] => [%s] vs [%s]\n", dot_line_piece_char, dot_line_map_dot, env->piece[coo.y_buff], env->map[coo.y_map]);
-			if (dot_line_map < dot_line_piece_dot || dot_line_piece_char > dot_line_map_dot)
-			{
-				coo.x_map = x;
-				coo.x_buff = coo.x_piece;
-				coo.y_map--;
-				coo.y_buff--;
-				/*>>*/dprintf(fd, "[DOT_LINE]\n");
-				continue ;
-			}
-		/**********************/
+		}
 
 		/*>>*/dprintf(fd, "------------------->[%d-%d]\n", coo.y_piece, coo.x_piece);
 		value = ft_test(env, coo);
-		/*>>*/dprintf(fd, "<-------------------\n\n");
+		/*>>*/dprintf(fd, "\n<-------------------\n\n");
 		if (value == NULL)
 		{
+			/*>>*/dprintf(fd, "X_map : [%d] | Y_map [%d] | X_buff [%d] | Y_buff [%d]\n", coo.x_map, coo.y_map, coo.x_buff, coo.y_buff);
 			if (coo.x_buff == 0 && coo.y_buff == 0)
 				return (NULL);
 			else if (coo.x_buff == 0)
@@ -323,12 +318,34 @@ int			*ft_try_piece(t_env *env, int x, int y)
 
 		}
 	}
+	/*>>*/dprintf(fd, "[TRY PIECE END]\n");
 	return (value);
 }
 
-// ADD une fonction avec un index de piece qui va enregistrer la premiere pos de la map tester
-// (Test : [1-2] -- [7-2] => Ici, ce serait la premiere position 7-2), de maniere a la sauter si on
-// retombe dessus
+/* ADD une fonction qui va parcourir toutes les lignes de la map et qui va
+** checker si il y a * a la pos des pieces :
+** [OXXXXXXXX........]
+** [OOXXXXXX.........]
+** [OOXXXX...........]
+** [OOOOXXX..........]
+** [OOOXXXXX.........]
+** [OOOOOOX..........]
+** [OOOOOOXX.........]
+** [OOOO...XX........]
+** [.OOOO..XXXX......]
+** [OOOOO.....X......]
+** [OOOO.....XXXXXX..]
+** [..............X..]
+** [..............X..]
+** [.................]
+** [.................]
+**
+** [......***.]
+
+
+++ Si on est sur une seule ligne et qu'il n'y a pas la place, next
+*/
+
 
 /*
 ** FT_ALGO parcours la map et des que l'on rencontre notre lettre, on test la
@@ -351,15 +368,39 @@ int			ft_algo(t_env *env)
 	while (y < env->map_size_y)
 	{
 		x = 0;
+		int dot_line_map_char = ft_count_char_line(env->map, env->map_size_x, y, env->letter_adv);
+		int dot_line_map_dot = ft_count_char_line(env->map, env->map_size_x, y, '.');
+		int dot_line_map = dot_line_map_char + dot_line_map_dot;
+		int dot_line_piece_char = ft_count_char_line(env->piece, env->piece_size_x, env->piece_size_y - 1, '*');
+		int dot_line_piece_dot = ft_count_char_line(env->piece, env->piece_size_x, env->piece_size_y - 1, '.');
+		// int dot_line_piece = dot_line_piece_char + dot_line_piece_dot;
+
+		/*>>*/dprintf(fd, "[%d] vs [%d] => [%s] vs [%s]\n", dot_line_piece_char, dot_line_map_dot, env->piece[env->piece_size_y - 1], env->map[y]);
+		/*>>*/dprintf(fd, "{x, y} = {%d, %d}\n", x, y);
+		if (dot_line_map < dot_line_piece_dot || dot_line_piece_char > dot_line_map_dot)
+		{
+			/*>>*/dprintf(fd, "[DOT_LINE]\n");
+			y++;
+			continue;
+		}
+					// coo.y_piece + coo.y_map, coo.x_piece + coo.x_map
+		else if (ft_check_index(env, env->piece_size_x - 1 + x, env->piece_size_y - 1 + y) == 1)
+		{
+			/*>>*/dprintf(fd, "[BROKE]\n");
+			y++;
+			continue;
+		}
+
 		while (x < env->map_size_x)
 		{
 			if (ft_isletter(env, x, y) == 1)
 			{
+				/*>>*/dprintf(fd, "[TRY PIECE BEFORE]\n");
 				value = ft_try_piece(env, x, y);
 				if (value != NULL)
 				{
 					ft_printf("%d %d\n", value[1], value[0]);
-					/*>>*/dprintf(fd, "%d %d\n", value[1], value[0]);
+					/*>>*/dprintf(fd, "FINAL VALUE : %d %d\n", value[1], value[0]);
 					free(value);
 					return (1);
 				}
@@ -370,6 +411,8 @@ int			ft_algo(t_env *env)
 		}
 		y++;
 	}
+	ft_printf("END");
+	/*>>*/dprintf(fd, "[END]\n");
 	return (0);
 }
 

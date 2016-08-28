@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/26 18:09:22 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/28 22:32:23 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void		ft_get_map_size(t_env *env, char *str)
 	env->map_size_y = ft_atoi(split[1]);
 	env->map_size_x = ft_atoi(split[2]);
 	env->map = ft_dbmalloc(env->map_size_x, env->map_size_y);
+	env->index = ft_dbmalloc(env->map_size_x, env->map_size_y);
 	ft_find_middle(env);
 	env->phase = 1;
 }
