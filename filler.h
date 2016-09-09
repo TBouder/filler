@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 19:26:23 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/28 22:07:14 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/09 20:06:54 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,21 +19,24 @@ typedef struct	s_env
 	int			phase;
 
 	char		**map;
+	int			*activ_line;
 	int			map_size_x;
 	int			map_size_y;
-
-	int			middle_x1;
-	int			middle_y1;
-	int			middle_x2;
-	int			middle_y2;
 
 	char		**piece;
 	int			piece_size_x;
 	int			piece_size_y;
 
+	int			**fragments;
+	int			nb_fragments;
+
 	char		letter_player;
 	char		letter_adv;
 
+	int			middle_x1;
+	int			middle_y1;
+	int			middle_x2;
+	int			middle_y2;
 	char		**index;
 
 }				t_env;
