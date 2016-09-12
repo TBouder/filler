@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 14:54:43 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 15:22:17 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,66 +22,15 @@
 */
 
 #include "filler.h"
-#include <stdio.h> /////////////////////////////
-
-#define MAP(y, x)		env->map[y][x]
-#define MAX_MAP_X		env->map_size_x
-#define MAX_MAP_Y		env->map_size_y
-
-#define MAX_PIECE_X		env->piece_size_x
-#define MAX_PIECE_Y		env->piece_size_y
-#define PIECE(y, x)		env->piece[y][x]
-
-/*******************************************************************************
-**	Fragments
-*******************************************************************************/
-void		ft_malloc_fragments_piece(t_env *env)
-{
-	int		i;
-
-	i = 0;
-	env->fragments = (int **)malloc(sizeof(int *) * env->nb_fragments);
-	while (i < env->nb_fragments)
-	{
-		env->fragments[i] = (int *)malloc(sizeof(int) * 2);
-		i++;
-	}
-}
-
-void		ft_extract_fragments_piece(t_env *env)
-{
-	int		x;
-	int		y;
-	int		i;
-
-	i = 0;
-	y = 0;
-	ft_malloc_fragments_piece(env);
-	while (y < MAX_PIECE_Y)
-	{
-		x = 0;
-		while (x < MAX_PIECE_X)
-		{
-			if (PIECE(y, x) == '*')
-			{
-				env->fragments[i][0] = y;
-				env->fragments[i][1] = x;
-				i++;
-			}
-			x++;
-		}
-		y++;
-	}
-}
 
 /*******************************************************************************
 **	ORIENTATION
 *******************************************************************************/
 void		ft_hori_verti(t_env *env)
 {
-	if (env->piece_size_x > env->piece_size_y)
+	if (MAX_PIECE_X > MAX_PIECE_Y)
 		env->piece_orientation = 1; //Horizontal
-	else if (env->piece_size_x < env->piece_size_y)
+	else if (MAX_PIECE_X < MAX_PIECE_Y)
 		env->piece_orientation = -1; //Vertical
 	else
 		env->piece_orientation = 0; //Cube
@@ -137,32 +86,6 @@ void		ft_choose_direction(t_env *env)
 **	ALGO
 *******************************************************************************/
 
-int			ft_test_fragments(t_env *env, int pos_x, int pos_y)
-{
-	int		i;
-	int		x;
-	int		y;
-	int		star_match;
-
-	i = 0;
-	star_match = 0;
-	while (i < env->nb_fragments)
-	{
-		x = env->fragments[i][1] + pos_x;
-		y = env->fragments[i][0] + pos_y;
-		if (y > MAX_MAP_Y - 1 || x > MAX_MAP_X - 1)
-			return (0);
-		if (MAP(y, x) == env->letter_player)
-			star_match++;
-		if (MAP(y, x) == env->letter_adv || star_match > 1)
-			return (0);
-		i++;
-	}
-	if (star_match == 1)
-		return (1);
-	return (0);
-}
-
 void		ft_algo_verti(t_env *env, int direction)
 {
 	int		x;
@@ -217,11 +140,10 @@ void		ft_algo(t_env *env)
 	ft_hori_verti(env);
 	ft_choose_direction(env);
 	ft_extract_fragments_piece(env);
-
 	if (env->piece_orientation == 1)
 		ft_algo_hori(env, env->direction_x);
 	if (env->piece_orientation == -1)
-			ft_algo_verti(env, env->direction_y);
+		ft_algo_verti(env, env->direction_y);
 	if (env->piece_orientation == 0)
 		ft_algo_verti(env, 1);
 }

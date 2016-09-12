@@ -6,13 +6,20 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 19:26:23 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 14:55:29 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 15:25:28 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FILLER_H
 # define FILLER_H
 # include "libft/libft.h"
+
+# define MAP(y, x)		env->map[y][x]
+# define MAX_MAP_X		env->map_size_x
+# define MAX_MAP_Y		env->map_size_y
+# define MAX_PIECE_X	env->piece_size_x
+# define MAX_PIECE_Y	env->piece_size_y
+# define PIECE(y, x)	env->piece[y][x]
 
 typedef struct	s_env
 {
@@ -52,5 +59,17 @@ void			ft_get_map_size(t_env *env, char *str);
 void			ft_get_board(t_env *env, char *str);
 void			ft_get_piece_size(t_env *env, char *str);
 void			ft_get_piece(t_env *env, char *str);
+
+/*
+** Get the fragmets (the * of each piece)
+*/
+void			ft_extract_fragments_piece(t_env *env);
+int				ft_test_fragments(t_env *env, int pos_x, int pos_y);
+
+/*
+** Get the general orientation
+*/
+void			ft_hori_verti(t_env *env);
+void			ft_choose_direction(t_env *env);
 
 #endif

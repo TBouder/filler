@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:19:43 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/10 16:21:42 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 14:56:16 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ char		**ft_dbmalloc(int x, int y)
 	return (str);
 }
 
-
 /*
 ** The ft_detail_piece() functil will count the number of '*' in the piece and
 ** return it
 */
+
 int			ft_detail_piece(t_env *env)
 {
 	int		x;

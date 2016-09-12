@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 14:53:40 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 14:56:50 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void		ft_get_board(t_env *env, char *str)
 	}
 	env->phase = 0;
 }
+
 void		ft_get_piece_size(t_env *env, char *str)
 {
 	char	**split;
@@ -83,7 +84,6 @@ void		ft_get_piece(t_env *env, char *str)
 		while (x < env->piece_size_x)
 		{
 			env->piece[y][x] = str[x];
-			//OPTI GET PIECE
 			if (str[x] == '*')
 				env->nb_fragments++;
 			x++;
