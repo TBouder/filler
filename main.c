@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 09:12:56 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 09:50:50 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,22 +76,47 @@ void		ft_extract_fragments_piece(t_env *env)
 }
 
 /*******************************************************************************
+**	ORIENTATION
+*******************************************************************************/
+void		ft_hori_verti(t_env *env)
+{
+	if (env->piece_size_x > env->piece_size_y)
+		env->piece_orientation == 1; //Horizontal
+	else if (env->piece_size_x < env->piece_size_y)
+		env->piece_orientation == -1; //Vertical
+	else
+		env->piece_orientation == 0; //Cube
+}
+
+
+int			ft_pos_cmp_middle_y(t_env *env, int y)
+{
+	// 1 => top
+	// -1 => down
+	if (y > env->middle_y1)
+		return (-1);
+	else if (y < env->middle_y2 && env->middle_y2 != -1)
+		return (1);
+	else
+		return (1);
+}
+
+int			ft_pos_cmp_middle_x(t_env *env, int x)
+{
+	// 1 => right
+	// -1 => left
+	if (x > env->middle_x1)
+		return (-1);
+	else if (x < env->middle_x2 && env->middle_x2 != -1)
+		return (1);
+	else
+		return (1);
+}
+
+
+/*******************************************************************************
 **	ALGO
 *******************************************************************************/
-
-int			ft_test_activ_lines(t_env *env, int y)
-{
-	int		i;
-
-	i = 0;
-	while (i < MAX_PIECE_Y)
-	{
-		if (env->activ_line[y + i] == 1)
-			return (1);
-		i++;
-	}
-	return (0);
-}
 
 int			ft_test_fragments(t_env *env, int pos_x, int pos_y)
 {
@@ -130,9 +155,6 @@ void		ft_algo_verti(t_env *env, int direction)
 		x = direction == -1 ? MAX_MAP_X : 0;
 		while (direction == -1 ? x > 0 : x < MAX_MAP_X)
 		{
-			// if (ft_test_activ_lines(env, y) == 0)
-			// // if (env->activ_line[y] == 0)
-			// 	break ;
 			if (ft_test_fragments(env, x, y) == 1)
 			{
 				ft_printf("%d %d\n", y, x);
@@ -144,7 +166,6 @@ void		ft_algo_verti(t_env *env, int direction)
 	}
 	ft_printf("0 0\n");
 }
-
 
 void		ft_algo_hori(t_env *env, int direction)
 {
@@ -175,22 +196,24 @@ void		ft_algo_hori(t_env *env, int direction)
 void		ft_algo(t_env *env)
 {
 	ft_extract_fragments_piece(env);
-	ft_algo_hori(env, -1);
+	if (env->piece_orientation == 1)
+	{
+		ft_algo_hori(env, -1); // RIGHT
+		ft_algo_hori(env, 1); // LEFT
+	}
+	if (env->piece_orientation == -1)
+	{
+		ft_algo_verti(env, -1); // DOWN
+		ft_algo_verti(env, 1); // TOP
+	}
+	if (env->piece_orientation == 0)
+	{
+		ft_algo_hori(env, -1); // RIGHT
+		ft_algo_hori(env, 1); // LEFT
 
-	// int	rd = rand() % 5;
-	// if (rd == 1)
-	// 	ft_algo_up(env);
-	// else if (rd == 2)
-	// 	ft_algo_down(env);
-	// else if (rd == 3)
-	// 	ft_algo_right(env);
-	// else
-	// 	ft_algo_left(env);
-
-	// ft_algo_up(env);
-	// ft_algo_down(env);
-	// ft_algo_right(env);
-	// ft_algo_left(env);
+		ft_algo_verti(env, -1); // DOWN
+		ft_algo_verti(env, 1); // TOP
+	}
 }
 
 void		ft_launcher(t_env *env)
