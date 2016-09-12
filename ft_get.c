@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 11:21:55 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 11:53:10 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ void		ft_get_map_size(t_env *env, char *str)
 	env->map_size_y = ft_atoi(split[1]);
 	env->map_size_x = ft_atoi(split[2]);
 	env->map = ft_dbmalloc(env->map_size_x, env->map_size_y);
-	// env->activ_line = (int *)malloc(sizeof(int) * env->map_size_y);
 	env->phase = 1;
 }
 
@@ -58,6 +57,8 @@ void		ft_get_board(t_env *env, char *str)
 		while (x < env->map_size_x)
 		{
 			env->map[y][i] = str[x];
+			if (env->map[y][i] == '*')
+				ft_listsend(env->map, i, y);
 			x++;
 			i++;
 		}

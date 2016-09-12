@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 11:23:14 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 11:53:17 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,6 @@
 #define MAX_PIECE_X		env->piece_size_x
 #define MAX_PIECE_Y		env->piece_size_y
 #define PIECE(y, x)		env->piece[y][x]
-
-/*******************************************************************************
-**	LST
-*******************************************************************************/
-
 
 /*******************************************************************************
 **	Fragments
@@ -263,6 +258,15 @@ void		ft_algo_hori(t_env *env, int direction)
 	ft_printf("0 0\n");
 }
 
+void		ft_debug(t_env *env)
+{
+	int		i = 0;
+	while (env->save_map != NULL)
+	{
+		ft_printf("%d %d\n", env->save_map->y, env->save_map->x);
+	}
+}
+
 /*******************************************************************************
 **	MAIN
 *******************************************************************************/
@@ -271,6 +275,7 @@ void		ft_algo(t_env *env)
 	ft_hori_verti(env);
 	ft_choose_direction(env);
 	ft_extract_fragments_piece(env);
+	ft_debug(env);
 
 	// ft_algo_top(env);
 	// if (env->piece_orientation == 1)
