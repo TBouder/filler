@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 14:56:50 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 15:35:22 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,9 @@ void		ft_get_map_size(t_env *env, char *str)
 	split = NULL;
 	i = 0;
 	split = ft_strsplit(str, ' ');
-	env->map_size_y = ft_atoi(split[1]);
-	env->map_size_x = ft_atoi(split[2]);
-	env->map = (char **)malloc(sizeof(char *) * env->map_size_y + 1);
+	MAX_MAP_Y = ft_atoi(split[1]);
+	MAX_MAP_X = ft_atoi(split[2]);
+	env->map = (char **)malloc(sizeof(char *) * MAX_MAP_Y + 1);
 	env->phase = 1;
 }
 
@@ -45,7 +45,7 @@ void		ft_get_board(t_env *env, char *str)
 	int		y;
 
 	y = 0;
-	while (y < env->map_size_y)
+	while (y < MAX_MAP_Y)
 	{
 		get_next_line(0, &str);
 		while (ft_isspace(*str) || ft_isnumber(*str))
@@ -64,9 +64,9 @@ void		ft_get_piece_size(t_env *env, char *str)
 	split = NULL;
 	i = 0;
 	split = ft_strsplit(str, ' ');
-	env->piece_size_y = ft_atoi(split[1]);
-	env->piece_size_x = ft_atoi(split[2]);
-	env->piece = ft_dbmalloc(env->piece_size_x, env->piece_size_y);
+	MAX_PIECE_Y = ft_atoi(split[1]);
+	MAX_PIECE_X = ft_atoi(split[2]);
+	env->piece = ft_dbmalloc(MAX_PIECE_X, MAX_PIECE_Y);
 	env->phase = 2;
 }
 
@@ -77,11 +77,11 @@ void		ft_get_piece(t_env *env, char *str)
 
 	y = 0;
 	env->nb_fragments = 0;
-	while (y < env->piece_size_y)
+	while (y < MAX_PIECE_Y)
 	{
 		get_next_line(0, &str);
 		x = 0;
-		while (x < env->piece_size_x)
+		while (x < MAX_PIECE_X)
 		{
 			env->piece[y][x] = str[x];
 			if (str[x] == '*')

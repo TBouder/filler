@@ -6,85 +6,11 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 15:22:17 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 15:37:38 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/*
-- Trouver le milieu
-- Regarder ou l'on est par rapport au milieu
-- Regarder ou est l'adv par rapport au milieu
-
-- Rusher vers le center de la map le plus possible
-
-- Si on recoit une piece plus grande horizontalement, privilegier l'horizontale
-- Si on recoit une piece plus grande verticalement, privilegier la verticale
-*/
-
 #include "filler.h"
-
-/*******************************************************************************
-**	ORIENTATION
-*******************************************************************************/
-void		ft_hori_verti(t_env *env)
-{
-	if (MAX_PIECE_X > MAX_PIECE_Y)
-		env->piece_orientation = 1; //Horizontal
-	else if (MAX_PIECE_X < MAX_PIECE_Y)
-		env->piece_orientation = -1; //Vertical
-	else
-		env->piece_orientation = 0; //Cube
-}
-
-int			ft_detect_chr(char *str, char c)
-{
-	int		i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == c)
-			return (i);
-		i++;
-	}
-	return (0);
-}
-
-void		ft_choose_direction(t_env *env)
-{
-	int		x;
-	int		y;
-	int		x_player = 0;
-	int		y_player = 0;
-	int		x_adv = 0;
-	int		y_adv = 0;
-
-	y = 0;
-	x = 0;
-	while (y < MAX_MAP_Y)
-	{
-		if (x_player == 0 && (x = ft_detect_chr(env->map[y], env->letter_player) != 0))
-		{
-			x_player = x;
-			y_player = y;
-		}
-		if (x_adv == 0 && (x = ft_detect_chr(env->map[y], env->letter_adv) != 0))
-		{
-			x_adv = x;
-			y_adv = y;
-		}
-		if (x_adv && x_player)
-			break ;
-		y++;
-	}
-	env->direction_x = x_adv > x_player ? 1 : -1;
-	env->direction_y = y_adv > y_player ? 1 : -1;
-}
-
-
-/*******************************************************************************
-**	ALGO
-*******************************************************************************/
 
 void		ft_algo_verti(t_env *env, int direction)
 {
@@ -132,9 +58,6 @@ void		ft_algo_hori(t_env *env, int direction)
 	ft_printf("0 0\n");
 }
 
-/*******************************************************************************
-**	MAIN
-*******************************************************************************/
 void		ft_algo(t_env *env)
 {
 	ft_hori_verti(env);
