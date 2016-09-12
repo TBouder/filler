@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 09:50:50 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 10:15:41 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,36 +81,56 @@ void		ft_extract_fragments_piece(t_env *env)
 void		ft_hori_verti(t_env *env)
 {
 	if (env->piece_size_x > env->piece_size_y)
-		env->piece_orientation == 1; //Horizontal
+		env->piece_orientation = 1; //Horizontal
 	else if (env->piece_size_x < env->piece_size_y)
-		env->piece_orientation == -1; //Vertical
+		env->piece_orientation = -1; //Vertical
 	else
-		env->piece_orientation == 0; //Cube
+		env->piece_orientation = 0; //Cube
 }
 
-
-int			ft_pos_cmp_middle_y(t_env *env, int y)
+int		ft_detect_chr(char *str, char c)
 {
-	// 1 => top
-	// -1 => down
-	if (y > env->middle_y1)
-		return (-1);
-	else if (y < env->middle_y2 && env->middle_y2 != -1)
-		return (1);
-	else
-		return (1);
+	int		i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == c)
+			return (i);
+		i++;
+	}
+	return (0);
 }
 
-int			ft_pos_cmp_middle_x(t_env *env, int x)
+void		ft_choose_direction(t_env *env)
 {
-	// 1 => right
-	// -1 => left
-	if (x > env->middle_x1)
-		return (-1);
-	else if (x < env->middle_x2 && env->middle_x2 != -1)
-		return (1);
-	else
-		return (1);
+	int		x;
+	int		y;
+	int		x_player = 0;
+	int		y_player = 0;
+	int		x_adv = 0;
+	int		y_adv = 0;
+
+	y = 0;
+	x = 0;
+	while (y < MAX_MAP_Y)
+	{
+		if (x_player == 0 && (x = ft_detect_chr(env->map[y], env->letter_player) != 0))
+		{
+			x_player = x;
+			y_player = y;
+		}
+		if (x_adv == 0 && (x = ft_detect_chr(env->map[y], env->letter_adv) != 0))
+		{
+			x_adv = x;
+			y_adv = y;
+		}
+		if (x_adv && x_player)
+			break ;
+		y++;
+	}
+	env->direction_x = x_adv > x_player ? 1 : -1;
+	env->direction_y = y_adv > y_player ? 1 : -1;
 }
 
 
@@ -195,23 +215,27 @@ void		ft_algo_hori(t_env *env, int direction)
 *******************************************************************************/
 void		ft_algo(t_env *env)
 {
+	ft_hori_verti(env);
+	ft_choose_direction(env);
 	ft_extract_fragments_piece(env);
 	if (env->piece_orientation == 1)
 	{
-		ft_algo_hori(env, -1); // RIGHT
-		ft_algo_hori(env, 1); // LEFT
+		ft_algo_hori(env, env->direction_x);
+		// ft_algo_hori(env, -1); // RIGHT
+		// ft_algo_hori(env, 1); // LEFT
 	}
 	if (env->piece_orientation == -1)
 	{
-		ft_algo_verti(env, -1); // DOWN
-		ft_algo_verti(env, 1); // TOP
+			ft_algo_verti(env, env->direction_y); // DOWN
+		// 	ft_algo_verti(env, -1); // DOWN
+		// 	ft_algo_verti(env, 1); // TOP
 	}
 	if (env->piece_orientation == 0)
 	{
-		ft_algo_hori(env, -1); // RIGHT
-		ft_algo_hori(env, 1); // LEFT
 
-		ft_algo_verti(env, -1); // DOWN
+		// ft_algo_hori(env, env->direction_x); // RIGHT
+		// ft_algo_hori(env, 1); // LEFT
+		// ft_algo_verti(env, -1); // DOWN
 		ft_algo_verti(env, 1); // TOP
 	}
 }

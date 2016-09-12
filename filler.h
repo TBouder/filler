@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 19:26:23 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 09:50:48 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 10:07:12 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,8 @@ typedef struct	s_env
 	char		letter_player;
 	char		letter_adv;
 
-	int			middle_x1;
-	int			middle_x2;
-	int			middle_y1;
-	int			middle_y2;
+	int			direction_x;
+	int			direction_y;
 }				t_env;
 
 
