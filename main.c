@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/09 20:05:53 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/10 18:10:04 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,25 @@
 */
 
 #include "filler.h"
+#include <stdio.h>
 
+#define MAP(y, x)		env->map[y][x]
+#define MAP_X			env->map_size_x
+#define MAP_Y			env->map_size_y
+
+#define PIECE_X			env->piece_size_x
+#define PIECE_Y			env->piece_size_y
+#define PIECE(y, x)		env->piece[y][x]
+
+
+/*******************************************************************************
+**	Fragments
+*******************************************************************************/
 void		ft_malloc_fragments_piece(t_env *env)
 {
 	int		i;
 
 	i = 0;
-	env->nb_fragments = ft_detail_piece(env);
 	env->fragments = (int **)malloc(sizeof(int *) * env->nb_fragments);
 	while (i < env->nb_fragments)
 	{
@@ -46,12 +58,12 @@ void		ft_extract_fragments_piece(t_env *env)
 	i = 0;
 	y = 0;
 	ft_malloc_fragments_piece(env);
-	while (y < env->piece_size_y)
+	while (y < PIECE_Y)
 	{
 		x = 0;
-		while (x < env->piece_size_x)
+		while (x < PIECE_X)
 		{
-			if (env->piece[y][x] == '*')
+			if (PIECE(y, x) == '*')
 			{
 				env->fragments[i][0] = y;
 				env->fragments[i][1] = x;
@@ -63,78 +75,164 @@ void		ft_extract_fragments_piece(t_env *env)
 	}
 }
 
-int			ft_strstr_filler(char *s1, char *s2, t_env *env)
+/*******************************************************************************
+**	ALGO
+*******************************************************************************/
+// OPTI TIME :
+// MODIFIER L'ETAT ACTIF D'UNE LIGNE AU MOMENT DU PLACEMENT
+// EVITER LES REMALLOCS
+
+int			ft_test_activ_lines(t_env *env, int y)
 {
-	int		one;
 	int		i;
-	int		j;
 
 	i = 0;
-	while (s1[i])
+	while (i < PIECE_Y)
 	{
-		j = 0;
-		one = 0;
-		while ((s1[i + j] == '.') || (s1[i + j] == env->letter_player
-			&& (s2[j] == '.' || s2[j] == '*')))
-		{
-			if (s1[i + j] == env->letter_player && s2[j] == '*' && one == 0)
-				one++;
-			else if (s1[i + j] == env->letter_player && s2[j] == '*' && one > 0)
-				break;
-			j++;
-		}
-		if (s2[j] == '\0' && one == 1)
-			return (i);
+		if (env->activ_line[y + i] == 1)
+			return (1);
 		i++;
 	}
-	return (-1);
-}
-
-int			ft_one_activ_line(t_env *env)
-{
-	if (ft_isstrstr(env->piece[0], "*") && !ft_isstrstr(env->piece[1], "*"))
-		return (1);
-	if (!ft_isstrstr(env->piece[0], "*") && ft_isstrstr(env->piece[1], "*"))
-		return (2);
 	return (0);
 }
 
-void		ft_algo_one_line(t_env *env, int ln)
+int			ft_test_fragments(t_env *env, int pos_x, int pos_y)
 {
-	int		r_val;
+	int		i;
+	int		x;
+	int		y;
+	int		star_match;
+
+	i = 0;
+	star_match = 0;
+	while (i < env->nb_fragments)
+	{
+		x = env->fragments[i][1];
+		y = env->fragments[i][0];
+		if (pos_y + y > MAP_Y - 1 || pos_x + x > MAP_X - 1)
+			return (0);
+		if (MAP(pos_y + y, pos_x + x) == env->letter_player)
+			star_match++;
+		if (MAP(pos_y + y, pos_x + x) == env->letter_adv || star_match > 1)
+			return (0);
+		i++;
+	}
+	if (star_match == 1)
+		return (1);
+	return (0);
+}
+
+void		ft_algo_up(t_env *env)
+{
+	int		x;
 	int		y;
 
-	y = ln;
-	while (y <= env->map_size_y - env->piece_size_y)
+	y = 0;
+	while (y < MAP_Y)
 	{
-		if ((r_val = ft_strstr_filler(env->map[y], env->piece[ln], env)) != -1)
+		x = 0;
+		while (x < MAP_X)
 		{
-			ft_printf("%d %d\n", y - ln, r_val);
-			return ;
+			// if (ft_test_activ_lines(env, y) == 0)
+			// // if (env->activ_line[y] == 0)
+			// 	break ;
+			if (ft_test_fragments(env, x, y) == 1)
+			{
+				ft_printf("%d %d\n", y, x);
+				return ;
+			}
+			x++;
 		}
 		y++;
 	}
+	ft_printf("0 0\n");
 }
 
+void		ft_algo_down(t_env *env)
+{
+	int		x;
+	int		y;
+
+	y = MAP_Y;
+	while (y > 0)
+	{
+		x = MAP_X;
+		while (x > 0)
+		{
+			if (ft_test_fragments(env, x, y) == 1)
+			{
+				ft_printf("%d %d\n", y, x);
+				return ;
+			}
+			x--;
+		}
+		y--;
+	}
+	ft_printf("0 0\n");
+}
+
+void		ft_algo_right(t_env *env)
+{
+	int		x;
+	int		y;
+
+	x = MAP_X;
+	while (x > 0)
+	{
+		y = MAP_Y;
+		while (y > 0)
+		{
+			if (ft_test_fragments(env, x, y) == 1)
+			{
+				ft_printf("%d %d\n", y, x);
+				return ;
+			}
+			y--;
+		}
+		x--;
+	}
+	ft_printf("0 0\n");
+}
+
+void		ft_algo_left(t_env *env)
+{
+	int		x;
+	int		y;
+
+	x = 0;
+	while (x < MAP_X)
+	{
+		y = 0;
+		while (y < MAP_Y)
+		{
+			// if (ft_test_activ_lines(env, y) == 0)
+			// // if (env->activ_line[y] == 0)
+			// 	break ;
+			if (ft_test_fragments(env, x, y) == 1)
+			{
+				ft_printf("%d %d\n", y, x);
+				return ;
+			}
+			y++;
+		}
+		x++;
+	}
+	ft_printf("0 0\n");
+}
+/*******************************************************************************
+**	MAIN
+*******************************************************************************/
 void		ft_algo(t_env *env)
 {
 	ft_extract_fragments_piece(env);
+	// if (rand() % 2 == 1)
+	// 	ft_algo_up(env);
+	// else
 
-	/*	[***]	*/
-	if (env->piece_size_y == 1)
-		ft_algo_one_line(env, 0);
-	/*	[***]
-		[...]	*/
-	else if (env->piece_size_y == 2 && ft_one_activ_line(env) == 1)
-		ft_algo_one_line(env, 0);
-	/*	[...]
-		[***]	*/
-	else if (env->piece_size_y == 2 && ft_one_activ_line(env) == 2)
-		ft_algo_one_line(env, 1);
-	/*	[***]
-		[***]	*/
-	// else if (env->piece_size_y == 2)
-		// ft_algo_two_line(env);
+	// ft_algo_up(env);
+	// ft_algo_down(env);
+	// ft_algo_right(env);
+	// ft_algo_left(env);
 }
 
 void		ft_launcher(t_env *env)

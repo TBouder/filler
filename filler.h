@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 19:26:23 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/09 20:09:05 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/10 16:29:39 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef struct	s_env
 ** Some Tools
 */
 char			**ft_dbmalloc(int x, int y);
-int				ft_isletter(t_env *env, int x, int y);
 int				ft_detail_piece(t_env *env);
 
 /*
