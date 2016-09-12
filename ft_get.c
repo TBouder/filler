@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 10:49:08 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 11:21:55 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,27 +36,10 @@ void		ft_get_map_size(t_env *env, char *str)
 	split = ft_strsplit(str, ' ');
 	env->map_size_y = ft_atoi(split[1]);
 	env->map_size_x = ft_atoi(split[2]);
-	env->map = (char **)malloc(sizeof(char *) * env->map_size_y + 1);
-	env->map_save = ft_dbmalloc(env->map_size_x, env->map_size_y);
+	env->map = ft_dbmalloc(env->map_size_x, env->map_size_y);
 	// env->activ_line = (int *)malloc(sizeof(int) * env->map_size_y);
 	env->phase = 1;
 }
-
-// void		ft_get_board(t_env *env, char *str)
-// {
-// 	int		y;
-//
-// 	y = 0;
-// 	while (y < env->map_size_y)
-// 	{
-// 		get_next_line(0, &str);
-// 		while (ft_isspace(*str) || ft_isnumber(*str))
-// 			str++;
-// 		env->map[y] = ft_strinit(str);
-// 		y++;
-// 	}
-// 	env->phase = 0;
-// }
 
 void		ft_get_board(t_env *env, char *str)
 {
@@ -72,10 +55,11 @@ void		ft_get_board(t_env *env, char *str)
 		i = 0;
 		while (ft_isspace(str[x]) || ft_isnumber(str[x]))
 			x++;
-		while (x < env->piece_size_x)
+		while (x < env->map_size_x)
 		{
 			env->map[y][i] = str[x];
 			x++;
+			i++;
 		}
 		y++;
 	}
@@ -92,7 +76,7 @@ void		ft_get_piece_size(t_env *env, char *str)
 	split = ft_strsplit(str, ' ');
 	env->piece_size_y = ft_atoi(split[1]);
 	env->piece_size_x = ft_atoi(split[2]);
-	env->piece = (char **)malloc(sizeof(char *) * env->piece_size_y + 1);
+	env->piece = ft_dbmalloc(env->piece_size_x, env->piece_size_y);
 	env->phase = 2;
 }
 
@@ -106,7 +90,6 @@ void		ft_get_piece(t_env *env, char *str)
 	while (y < env->piece_size_y)
 	{
 		get_next_line(0, &str);
-		env->piece[y] = ft_strnew(env->piece_size_x);
 		x = 0;
 		while (x < env->piece_size_x)
 		{

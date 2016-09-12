@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 10:48:28 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 11:23:14 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@
 #define MAX_PIECE_X		env->piece_size_x
 #define MAX_PIECE_Y		env->piece_size_y
 #define PIECE(y, x)		env->piece[y][x]
+
+/*******************************************************************************
+**	LST
+*******************************************************************************/
 
 
 /*******************************************************************************
@@ -88,7 +92,7 @@ void		ft_hori_verti(t_env *env)
 		env->piece_orientation = 0; //Cube
 }
 
-int		ft_detect_chr(char *str, char c)
+int			ft_detect_chr(char *str, char c)
 {
 	int		i;
 
