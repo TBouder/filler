@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 15:37:38 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 15:46:57 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,9 @@ void		ft_launcher(t_env *env)
 		if (env->phase == 2)
 			ft_get_piece(env, str);
 		if (env->phase == 3)
+		{
 			ft_algo(env);
+		}
 	}
 	ft_strdel(&str);
 }
