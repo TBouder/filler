@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 11:53:10 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 12:02:55 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,8 @@ void		ft_get_board(t_env *env, char *str)
 		while (x < env->map_size_x)
 		{
 			env->map[y][i] = str[x];
-			if (env->map[y][i] == '*')
-				ft_listsend(env->map, i, y);
+			if (env->map[y][i] == env->letter_player)
+				ft_listsend(&env->save_map, i, y);
 			x++;
 			i++;
 		}

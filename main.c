@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 11:53:17 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 12:03:18 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -260,11 +260,14 @@ void		ft_algo_hori(t_env *env, int direction)
 
 void		ft_debug(t_env *env)
 {
-	int		i = 0;
+	int fd = open("debug", O_WRONLY|O_APPEND);
+
 	while (env->save_map != NULL)
 	{
-		ft_printf("%d %d\n", env->save_map->y, env->save_map->x);
+		dprintf(fd, "%d %d\n", env->save_map->y, env->save_map->x);
+		env->save_map = env->save_map->next;
 	}
+	dprintf(fd, "------------------------------------\n");
 }
 
 /*******************************************************************************
