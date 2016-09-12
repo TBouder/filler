@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 12:03:18 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 13:20:43 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,23 +191,14 @@ int			ft_test_fragments_2(t_env *env, int pos_x, int pos_y)
 
 void		ft_algo_top(t_env *env)
 {
-	int		x;
-	int		y;
-
-	y = 0;
-	while (y < MAX_MAP_Y)
+	while (env->save_map)
 	{
-		x = 0;
-		while (x < MAX_MAP_X)
+		if (ft_test_fragments(env, env->save_map->x, env->save_map->y) == 1)
 		{
-			if (MAP(y, x) == env->letter_player && ft_test_fragments_2(env, x, y) == 1)
-			{
-				ft_printf("%d %d\n", y, x);
-				return ;
-			}
-			x++;
+			ft_printf("%d %d\n", env->save_map->y, env->save_map->x);
+			return ;
 		}
-		y++;
+		env->save_map = env->save_map->next;
 	}
 	ft_printf("0 0\n");
 }
@@ -258,6 +249,7 @@ void		ft_algo_hori(t_env *env, int direction)
 	ft_printf("0 0\n");
 }
 
+//******//
 void		ft_debug(t_env *env)
 {
 	int fd = open("debug", O_WRONLY|O_APPEND);
@@ -280,13 +272,13 @@ void		ft_algo(t_env *env)
 	ft_extract_fragments_piece(env);
 	ft_debug(env);
 
-	// ft_algo_top(env);
+	ft_algo_top(env);
 	// if (env->piece_orientation == 1)
 	// 	ft_algo_hori(env, env->direction_x);
 	// if (env->piece_orientation == -1)
 	// 		ft_algo_verti(env, env->direction_y); // DOWN
 	// if (env->piece_orientation == 0)
-		ft_algo_verti(env, 1); // TOP
+		// ft_algo_verti(env, 1); // TOP
 }
 
 void		ft_launcher(t_env *env)
