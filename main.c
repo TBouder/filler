@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/10 18:10:04 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 09:12:56 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,14 +22,14 @@
 */
 
 #include "filler.h"
-#include <stdio.h>
+#include <stdio.h> /////////////////////////////
 
 #define MAP(y, x)		env->map[y][x]
-#define MAP_X			env->map_size_x
-#define MAP_Y			env->map_size_y
+#define MAX_MAP_X		env->map_size_x
+#define MAX_MAP_Y		env->map_size_y
 
-#define PIECE_X			env->piece_size_x
-#define PIECE_Y			env->piece_size_y
+#define MAX_PIECE_X		env->piece_size_x
+#define MAX_PIECE_Y		env->piece_size_y
 #define PIECE(y, x)		env->piece[y][x]
 
 
@@ -58,10 +58,10 @@ void		ft_extract_fragments_piece(t_env *env)
 	i = 0;
 	y = 0;
 	ft_malloc_fragments_piece(env);
-	while (y < PIECE_Y)
+	while (y < MAX_PIECE_Y)
 	{
 		x = 0;
-		while (x < PIECE_X)
+		while (x < MAX_PIECE_X)
 		{
 			if (PIECE(y, x) == '*')
 			{
@@ -78,16 +78,13 @@ void		ft_extract_fragments_piece(t_env *env)
 /*******************************************************************************
 **	ALGO
 *******************************************************************************/
-// OPTI TIME :
-// MODIFIER L'ETAT ACTIF D'UNE LIGNE AU MOMENT DU PLACEMENT
-// EVITER LES REMALLOCS
 
 int			ft_test_activ_lines(t_env *env, int y)
 {
 	int		i;
 
 	i = 0;
-	while (i < PIECE_Y)
+	while (i < MAX_PIECE_Y)
 	{
 		if (env->activ_line[y + i] == 1)
 			return (1);
@@ -109,7 +106,7 @@ int			ft_test_fragments(t_env *env, int pos_x, int pos_y)
 	{
 		x = env->fragments[i][1];
 		y = env->fragments[i][0];
-		if (pos_y + y > MAP_Y - 1 || pos_x + x > MAP_X - 1)
+		if (pos_y + y > MAX_MAP_Y - 1 || pos_x + x > MAX_MAP_X - 1)
 			return (0);
 		if (MAP(pos_y + y, pos_x + x) == env->letter_player)
 			star_match++;
@@ -122,16 +119,16 @@ int			ft_test_fragments(t_env *env, int pos_x, int pos_y)
 	return (0);
 }
 
-void		ft_algo_up(t_env *env)
+void		ft_algo_verti(t_env *env, int direction)
 {
 	int		x;
 	int		y;
 
-	y = 0;
-	while (y < MAP_Y)
+	y = direction == -1 ? MAX_MAP_Y : 0;
+	while (direction == -1 ? y > 0 : y < MAX_MAP_Y)
 	{
-		x = 0;
-		while (x < MAP_X)
+		x = direction == -1 ? MAX_MAP_X : 0;
+		while (direction == -1 ? x > 0 : x < MAX_MAP_X)
 		{
 			// if (ft_test_activ_lines(env, y) == 0)
 			// // if (env->activ_line[y] == 0)
@@ -141,93 +138,54 @@ void		ft_algo_up(t_env *env)
 				ft_printf("%d %d\n", y, x);
 				return ;
 			}
-			x++;
+			x += direction;
 		}
-		y++;
+		y += direction;
 	}
 	ft_printf("0 0\n");
 }
 
-void		ft_algo_down(t_env *env)
+
+void		ft_algo_hori(t_env *env, int direction)
 {
 	int		x;
 	int		y;
 
-	y = MAP_Y;
-	while (y > 0)
+	x = direction == -1 ? MAX_MAP_X : 0;
+	while (direction == -1 ? x > 0 : x < MAX_MAP_X)
 	{
-		x = MAP_X;
-		while (x > 0)
+		y = direction == -1 ? MAX_MAP_Y : 0;
+		while (direction == -1 ? y > 0 : y < MAX_MAP_Y)
 		{
 			if (ft_test_fragments(env, x, y) == 1)
 			{
 				ft_printf("%d %d\n", y, x);
 				return ;
 			}
-			x--;
+			y += direction;
 		}
-		y--;
+		x += direction;
 	}
 	ft_printf("0 0\n");
 }
 
-void		ft_algo_right(t_env *env)
-{
-	int		x;
-	int		y;
-
-	x = MAP_X;
-	while (x > 0)
-	{
-		y = MAP_Y;
-		while (y > 0)
-		{
-			if (ft_test_fragments(env, x, y) == 1)
-			{
-				ft_printf("%d %d\n", y, x);
-				return ;
-			}
-			y--;
-		}
-		x--;
-	}
-	ft_printf("0 0\n");
-}
-
-void		ft_algo_left(t_env *env)
-{
-	int		x;
-	int		y;
-
-	x = 0;
-	while (x < MAP_X)
-	{
-		y = 0;
-		while (y < MAP_Y)
-		{
-			// if (ft_test_activ_lines(env, y) == 0)
-			// // if (env->activ_line[y] == 0)
-			// 	break ;
-			if (ft_test_fragments(env, x, y) == 1)
-			{
-				ft_printf("%d %d\n", y, x);
-				return ;
-			}
-			y++;
-		}
-		x++;
-	}
-	ft_printf("0 0\n");
-}
 /*******************************************************************************
 **	MAIN
 *******************************************************************************/
 void		ft_algo(t_env *env)
 {
 	ft_extract_fragments_piece(env);
-	// if (rand() % 2 == 1)
+	ft_algo_hori(env, -1);
+
+	// int	rd = rand() % 5;
+	// if (rd == 1)
 	// 	ft_algo_up(env);
+	// else if (rd == 2)
+	// 	ft_algo_down(env);
+	// else if (rd == 3)
+	// 	ft_algo_right(env);
 	// else
+	// 	ft_algo_left(env);
 
 	// ft_algo_up(env);
 	// ft_algo_down(env);
