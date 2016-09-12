@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 14:22:31 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 14:25:03 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,89 +163,6 @@ int			ft_test_fragments(t_env *env, int pos_x, int pos_y)
 	return (0);
 }
 
-int			ft_test_fragments_2(t_env *env, int pos_x, int pos_y)
-{
-	int fd = open("debug", O_WRONLY|O_APPEND);
-	int		i;
-	int		j;
-	int		x;
-	int		y;
-	int		star_match;
-
-	j = 0;
-	while (j < env->nb_fragments)
-	{
-		i = 0;
-		star_match = 0;
-		dprintf(fd, "[%d %d] : ", pos_y, pos_x);
-		while (i < env->nb_fragments)
-		{
-			x = pos_x + env->fragments[i][1];
-			y = pos_y + env->fragments[i][0];
-			if (y > MAX_MAP_Y - 1 || x > MAX_MAP_X - 1 || y < 0 || x < 0)
-			{
-				star_match = 2;
-				break ;
-			}
-			if (MAP(y, x) == env->letter_player)
-				star_match++;
-			if (MAP(y, x) == env->letter_adv || star_match > 1)
-			{
-				star_match = 2;
-				break ;
-			}
-			dprintf(fd, "[%d %d] ", y, x);
-			i++;
-		}
-		dprintf(fd, "\n");
-		if (star_match == 1)
-		{
-			dprintf(fd, "FINAL VAL [%d %d] ", pos_y, pos_x);
-			return (j);
-		}
-		else
-		{
-			j++;
-			if (j < env->nb_fragments)
-			{
-				pos_x -= env->fragments[j][1];
-				pos_y -= env->fragments[j][0];
-			}
-		}
-	}
-	return (-1);
-}
-
-void		ft_algo_top(t_env *env)
-{
-	int fd = open("debug", O_WRONLY|O_APPEND);
-	int		x;
-	int		y;
-	int		i;
-	int		j;
-
-	i = 0;
-	while (env->save_map)
-	{
-		dprintf(fd, "[COO] : [%d, %d]\n", env->save_map->y, env->save_map->x);
-		if ((j = ft_test_fragments_2(env, env->save_map->x, env->save_map->y)) != -1)
-		{
-			x = env->save_map->x;
-			y = env->save_map->y;
-			while (i < j)
-			{
-				i++;
-				x -= env->fragments[i][1];
-				y -= env->fragments[i][0];
-			}
-			dprintf(fd, "FINAL VAL_TEST [%d %d]\n", y, x);
-			ft_printf("%d %d\n", y, x);
-			return ;
-		}
-		env->save_map = env->save_map->next;
-	}
-	ft_printf("0 0\n");
-}
 
 void		ft_algo_verti(t_env *env, int direction)
 {
@@ -293,19 +210,6 @@ void		ft_algo_hori(t_env *env, int direction)
 	ft_printf("0 0\n");
 }
 
-//******//
-void		ft_debug(t_env *env)
-{
-	int fd = open("debug", O_WRONLY|O_APPEND);
-
-	while (env->save_map != NULL)
-	{
-		dprintf(fd, "%d %d\n", env->save_map->y, env->save_map->x);
-		env->save_map = env->save_map->next;
-	}
-	dprintf(fd, "------------------------------------\n");
-}
-
 /*******************************************************************************
 **	MAIN
 *******************************************************************************/
@@ -314,14 +218,12 @@ void		ft_algo(t_env *env)
 	ft_hori_verti(env);
 	ft_choose_direction(env);
 	ft_extract_fragments_piece(env);
-	// ft_debug(env);
 
-	// ft_algo_top(env);
-	// if (env->piece_orientation == 1)
-	// 	ft_algo_hori(env, env->direction_x);
-	// if (env->piece_orientation == -1)
-	// 		ft_algo_verti(env, env->direction_y); // DOWN
-	// if (env->piece_orientation == 0)
+	if (env->piece_orientation == 1)
+		ft_algo_hori(env, env->direction_x);
+	if (env->piece_orientation == -1)
+			ft_algo_verti(env, env->direction_y); // DOWN
+	if (env->piece_orientation == 0)
 		ft_algo_verti(env, 1); // TOP
 }
 

@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 19:26:23 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 11:53:07 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 14:24:39 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,10 @@
 # define FILLER_H
 # include "libft/libft.h"
 
-typedef struct			s_lst_filler
-{
-	int					y;
-	int					x;
-	struct s_lst_filler	*prev;
-	struct s_lst_filler	*next;
-}						t_lst_filler;
-
 typedef struct			s_env
 {
 	int					phase;
 
-	struct s_lst_filler		*save_map;
 	char				**map;
 	int					*activ_line;
 	int					map_size_x;
@@ -61,7 +52,5 @@ void			ft_get_map_size(t_env *env, char *str);
 void			ft_get_board(t_env *env, char *str);
 void			ft_get_piece_size(t_env *env, char *str);
 void			ft_get_piece(t_env *env, char *str);
-
-void			ft_listsend(t_lst_filler **list, int x, int y);
 
 #endif
