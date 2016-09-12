@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 19:26:23 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 10:07:12 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 10:44:51 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 typedef struct	s_env
 {
 	int			phase;
+	char		**map_save;
+
 
 	char		**map;
 	int			*activ_line;

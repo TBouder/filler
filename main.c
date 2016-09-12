@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 10:15:41 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 10:48:28 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,6 +164,55 @@ int			ft_test_fragments(t_env *env, int pos_x, int pos_y)
 	return (0);
 }
 
+int			ft_test_fragments_2(t_env *env, int pos_x, int pos_y)
+{
+	int		i;
+	int		x;
+	int		y;
+	int		star_match;
+
+	i = 0;
+	star_match = 0;
+	while (i < env->nb_fragments)
+	{
+		x = env->fragments[i][1];
+		y = env->fragments[i][0];
+		if (pos_y + y > MAX_MAP_Y - 1 || pos_x + x > MAX_MAP_X - 1)
+			return (0);
+		if (MAP(pos_y + y, pos_x + x) == env->letter_player)
+			star_match++;
+		if (MAP(pos_y + y, pos_x + x) == env->letter_adv || star_match > 1)
+			return (0);
+		i++;
+	}
+	if (star_match == 1)
+		return (1);
+	return (0);
+}
+
+void		ft_algo_top(t_env *env)
+{
+	int		x;
+	int		y;
+
+	y = 0;
+	while (y < MAX_MAP_Y)
+	{
+		x = 0;
+		while (x < MAX_MAP_X)
+		{
+			if (MAP(y, x) == env->letter_player && ft_test_fragments_2(env, x, y) == 1)
+			{
+				ft_printf("%d %d\n", y, x);
+				return ;
+			}
+			x++;
+		}
+		y++;
+	}
+	ft_printf("0 0\n");
+}
+
 void		ft_algo_verti(t_env *env, int direction)
 {
 	int		x;
@@ -218,26 +267,14 @@ void		ft_algo(t_env *env)
 	ft_hori_verti(env);
 	ft_choose_direction(env);
 	ft_extract_fragments_piece(env);
-	if (env->piece_orientation == 1)
-	{
-		ft_algo_hori(env, env->direction_x);
-		// ft_algo_hori(env, -1); // RIGHT
-		// ft_algo_hori(env, 1); // LEFT
-	}
-	if (env->piece_orientation == -1)
-	{
-			ft_algo_verti(env, env->direction_y); // DOWN
-		// 	ft_algo_verti(env, -1); // DOWN
-		// 	ft_algo_verti(env, 1); // TOP
-	}
-	if (env->piece_orientation == 0)
-	{
 
-		// ft_algo_hori(env, env->direction_x); // RIGHT
-		// ft_algo_hori(env, 1); // LEFT
-		// ft_algo_verti(env, -1); // DOWN
+	// ft_algo_top(env);
+	// if (env->piece_orientation == 1)
+	// 	ft_algo_hori(env, env->direction_x);
+	// if (env->piece_orientation == -1)
+	// 		ft_algo_verti(env, env->direction_y); // DOWN
+	// if (env->piece_orientation == 0)
 		ft_algo_verti(env, 1); // TOP
-	}
 }
 
 void		ft_launcher(t_env *env)
