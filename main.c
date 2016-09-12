@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 13:20:43 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 13:52:27 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,35 +165,44 @@ int			ft_test_fragments(t_env *env, int pos_x, int pos_y)
 
 int			ft_test_fragments_2(t_env *env, int pos_x, int pos_y)
 {
+	int fd = open("debug", O_WRONLY|O_APPEND);
 	int		i;
-	int		x;
-	int		y;
+	int		j;
+	int		x, x1;
+	int		y, y1;
 	int		star_match;
 
-	i = 0;
+	j = 0;
 	star_match = 0;
-	while (i < env->nb_fragments)
+	while (j < env->nb_fragments)
 	{
-		x = env->fragments[i][1];
-		y = env->fragments[i][0];
-		if (pos_y + y > MAX_MAP_Y - 1 || pos_x + x > MAX_MAP_X - 1)
-			return (0);
-		if (MAP(pos_y + y, pos_x + x) == env->letter_player)
-			star_match++;
-		if (MAP(pos_y + y, pos_x + x) == env->letter_adv || star_match > 1)
-			return (0);
-		i++;
+		x1 = env->fragments[j][1];
+		y1 = env->fragments[j][0];
+		i = 0;
+		dprintf(fd, "[%d %d] : ", pos_y, pos_x);
+		while (i < env->nb_fragments)
+		{
+			x = env->fragments[i][1];// + (env->fragments[i][1] - x1);
+			y = env->fragments[i][0];// + (env->fragments[i][0] - y1);
+
+			dprintf(fd, "[%d %d] ", y, x);
+			i++;
+		}
+		j++;
+		dprintf(fd, "\n");
 	}
 	if (star_match == 1)
-		return (1);
+		return (j);
 	return (0);
 }
 
 void		ft_algo_top(t_env *env)
 {
+	int fd = open("debug", O_WRONLY|O_APPEND);
 	while (env->save_map)
 	{
-		if (ft_test_fragments(env, env->save_map->x, env->save_map->y) == 1)
+		dprintf(fd, "[COO] : [CASES TESTEES]\n");
+		if (ft_test_fragments_2(env, env->save_map->x, env->save_map->y) != 0)
 		{
 			ft_printf("%d %d\n", env->save_map->y, env->save_map->x);
 			return ;
@@ -270,7 +279,7 @@ void		ft_algo(t_env *env)
 	ft_hori_verti(env);
 	ft_choose_direction(env);
 	ft_extract_fragments_piece(env);
-	ft_debug(env);
+	// ft_debug(env);
 
 	ft_algo_top(env);
 	// if (env->piece_orientation == 1)
