@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 14:24:44 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 14:53:40 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,35 +36,25 @@ void		ft_get_map_size(t_env *env, char *str)
 	split = ft_strsplit(str, ' ');
 	env->map_size_y = ft_atoi(split[1]);
 	env->map_size_x = ft_atoi(split[2]);
-	env->map = ft_dbmalloc(env->map_size_x, env->map_size_y);
+	env->map = (char **)malloc(sizeof(char *) * env->map_size_y + 1);
 	env->phase = 1;
 }
 
 void		ft_get_board(t_env *env, char *str)
 {
-	int		i;
 	int		y;
-	int		x;
 
 	y = 0;
 	while (y < env->map_size_y)
 	{
 		get_next_line(0, &str);
-		x = 0;
-		i = 0;
-		while (ft_isspace(str[x]) || ft_isnumber(str[x]))
-			x++;
-		while (x < env->map_size_x)
-		{
-			env->map[y][i] = str[x];
-			x++;
-			i++;
-		}
+		while (ft_isspace(*str) || ft_isnumber(*str))
+			str++;
+		env->map[y] = ft_strinit(str);
 		y++;
 	}
 	env->phase = 0;
 }
-
 void		ft_get_piece_size(t_env *env, char *str)
 {
 	char	**split;
