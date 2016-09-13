@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 15:46:57 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/13 12:00:15 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,14 +61,9 @@ void		ft_algo_hori(t_env *env, int direction)
 void		ft_algo(t_env *env)
 {
 	ft_hori_verti(env);
-	ft_choose_direction(env);
 	ft_extract_fragments_piece(env);
-	if (env->piece_orientation == 1)
-		ft_algo_hori(env, env->direction_x);
-	if (env->piece_orientation == -1)
-		ft_algo_verti(env, env->direction_y);
-	if (env->piece_orientation == 0)
-		ft_algo_verti(env, 1);
+	env->piece_orientation >= 0 ? ft_algo_hori(env, env->direction_x) : 0;
+	env->piece_orientation == -1 ? ft_algo_verti(env, env->direction_y) : 0;
 }
 
 void		ft_launcher(t_env *env)
@@ -93,6 +88,7 @@ void		ft_launcher(t_env *env)
 			ft_get_piece(env, str);
 		if (env->phase == 3)
 		{
+			ft_print_update(env);
 			ft_algo(env);
 		}
 	}
@@ -103,6 +99,8 @@ int			main(void)
 {
 	static t_env	env;
 
+	close(open("debug", O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP
+		| S_IROTH));
 	ft_launcher(&env);
 	return (0);
 }

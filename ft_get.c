@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 15:35:22 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/13 11:56:05 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void		ft_get_player(t_env *env, char *str)
 {
+	env->direction_x = 0;
 	if (ft_isstrstr(str, "$$$ exec p1 : ["))
 	{
 		env->letter_player = 'O';
@@ -53,6 +54,7 @@ void		ft_get_board(t_env *env, char *str)
 		env->map[y] = ft_strinit(str);
 		y++;
 	}
+	env->direction_x == 0 ? ft_choose_direction(env) : 0;
 	env->phase = 0;
 }
 

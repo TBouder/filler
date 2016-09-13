@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:19:43 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 14:56:16 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/13 11:59:46 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,29 +27,25 @@ char		**ft_dbmalloc(int x, int y)
 	return (str);
 }
 
-/*
-** The ft_detail_piece() functil will count the number of '*' in the piece and
-** return it
-*/
-
-int			ft_detail_piece(t_env *env)
+void		ft_print_update(t_env *env)
 {
-	int		x;
-	int		y;
-	int		nb;
+	int		fd;
+	int		count1;
+	int		count2;
 
-	y = 0;
-	nb = 0;
-	while (y < env->piece_size_y)
+	fd = open("debug", O_WRONLY | O_APPEND);
+	count1 = 0;
+	count2 = 0;
+	while (count1 < MAX_MAP_Y)
 	{
-		x = 0;
-		while (x < env->piece_size_x)
-		{
-			if (env->piece[y][x] == '*')
-				nb++;
-			x++;
-		}
-		y++;
+		ft_putendl_fd(env->map[count1], fd);
+		count1++;
 	}
-	return (nb);
+	ft_putendl_fd("=================", fd);
+	while (count2 < MAX_PIECE_Y)
+	{
+		ft_putendl_fd(env->piece[count2], fd);
+		count2++;
+	}
+	ft_putstr_fd("\n\n", fd);
 }

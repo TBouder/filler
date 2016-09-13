@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/09/12 15:22:28 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/12 15:32:53 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/13 10:04:50 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,6 @@ void			ft_choose_direction(t_env *env)
 			break ;
 		env->tmp++;
 	}
-	env->direction_x = x_adv > x_player ? 1 : -1;
+	env->direction_x = x_adv > x_player ? -1 : 1;
 	env->direction_y = y_adv > y_player ? 1 : -1;
 }
