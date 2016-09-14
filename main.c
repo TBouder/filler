@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/13 12:00:15 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/13 15:21:12 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ void		ft_algo_verti(t_env *env, int direction)
 	int		y;
 
 	y = direction == -1 ? MAX_MAP_Y : 0;
-	while (direction == -1 ? y > 0 : y < MAX_MAP_Y)
+	while (direction == -1 ? y >= 0 : y + MAX_PIECE_Y <= MAX_MAP_Y)
 	{
 		x = direction == -1 ? MAX_MAP_X : 0;
-		while (direction == -1 ? x > 0 : x < MAX_MAP_X)
+		while (direction == -1 ? x >= 0 : x + MAX_PIECE_X <= MAX_MAP_X)
 		{
 			if (ft_test_fragments(env, x, y) == 1)
 			{
@@ -41,10 +41,10 @@ void		ft_algo_hori(t_env *env, int direction)
 	int		y;
 
 	x = direction == -1 ? MAX_MAP_X : 0;
-	while (direction == -1 ? x > 0 : x < MAX_MAP_X)
+	while (direction == -1 ? x >= 0 : x + MAX_PIECE_X <= MAX_MAP_X)
 	{
 		y = direction == -1 ? MAX_MAP_Y : 0;
-		while (direction == -1 ? y > 0 : y < MAX_MAP_Y)
+		while (direction == -1 ? y >= 0 : y + MAX_PIECE_Y <= MAX_MAP_Y)
 		{
 			if (ft_test_fragments(env, x, y) == 1)
 			{
