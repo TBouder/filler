@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/13 15:21:12 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/19 15:23:31 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void		ft_launcher(t_env *env)
 	char	*str;
 
 	env->phase = 0;
+	env->map = NULL;
 	while (get_next_line(0, &str))
 	{
 		if (ft_isstrstr(str, "$$$ exec "))
