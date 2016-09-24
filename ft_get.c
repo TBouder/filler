@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:15:15 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/19 15:25:11 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/24 12:26:39 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,24 +34,37 @@ void		ft_get_map_size(t_env *env, char *str)
 
 	split = NULL;
 	i = 0;
-	split = ft_strsplit(str, ' ');
-	MAX_MAP_Y = ft_atoi(split[1]);
-	MAX_MAP_X = ft_atoi(split[2]);
-	env->map = (char **)malloc(sizeof(char *) * MAX_MAP_Y + 1);
+	if (env->map == NULL)
+	{
+		split = ft_strsplit(str, ' ');
+		MAX_MAP_Y = ft_atoi(split[1]);
+		MAX_MAP_X = ft_atoi(split[2]);
+		env->map = ft_dbmalloc(MAX_MAP_X, MAX_MAP_Y);
+		ft_dbstrdel(split);
+	}
 	env->phase = 1;
 }
 
 void		ft_get_board(t_env *env, char *str)
 {
 	int		y;
+	int		x;
+	int		i;
 
 	y = 0;
 	while (y < MAX_MAP_Y)
 	{
 		get_next_line(0, &str);
-		while (ft_isspace(*str) || ft_isnumber(*str))
-			str++;
-		env->map[y] = ft_strinit(str);
+		x = 0;
+		i = 0;
+		while (ft_isspace(str[x]) || ft_isnumber(str[x]))
+			x++;
+		while (i < MAX_MAP_X)
+		{
+			env->map[y][i] = str[x];
+			x++;
+			i++;
+		}
 		y++;
 	}
 	env->direction_x == 0 ? ft_choose_direction(env) : 0;
@@ -65,10 +78,14 @@ void		ft_get_piece_size(t_env *env, char *str)
 
 	split = NULL;
 	i = 0;
-	split = ft_strsplit(str, ' ');
-	MAX_PIECE_Y = ft_atoi(split[1]);
-	MAX_PIECE_X = ft_atoi(split[2]);
-	env->piece = ft_dbmalloc(MAX_PIECE_X, MAX_PIECE_Y);
+	if (env->piece == NULL)
+	{
+		split = ft_strsplit(str, ' ');
+		MAX_PIECE_Y = ft_atoi(split[1]);
+		MAX_PIECE_X = ft_atoi(split[2]);
+		ft_dbstrdel(split);
+		env->piece = ft_dbmalloc(MAX_PIECE_X, MAX_PIECE_Y);
+	}
 	env->phase = 2;
 }
 

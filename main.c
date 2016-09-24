@@ -6,13 +6,13 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/27 10:23:17 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/19 15:23:31 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/24 12:50:37 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-void		ft_algo_verti(t_env *env, int direction)
+static void		ft_algo_verti(t_env *env, int direction)
 {
 	int		x;
 	int		y;
@@ -35,7 +35,7 @@ void		ft_algo_verti(t_env *env, int direction)
 	ft_printf("0 0\n");
 }
 
-void		ft_algo_hori(t_env *env, int direction)
+static void		ft_algo_hori(t_env *env, int direction)
 {
 	int		x;
 	int		y;
@@ -58,15 +58,17 @@ void		ft_algo_hori(t_env *env, int direction)
 	ft_printf("0 0\n");
 }
 
-void		ft_algo(t_env *env)
+static void		ft_algo(t_env *env)
 {
+	ft_print_update(env);
 	ft_hori_verti(env);
 	ft_extract_fragments_piece(env);
 	env->piece_orientation >= 0 ? ft_algo_hori(env, env->direction_x) : 0;
 	env->piece_orientation == -1 ? ft_algo_verti(env, env->direction_y) : 0;
+	ft_free_get(env);
 }
 
-void		ft_launcher(t_env *env)
+static void		ft_launcher(t_env *env)
 {
 	char	*str;
 
@@ -74,29 +76,22 @@ void		ft_launcher(t_env *env)
 	env->map = NULL;
 	while (get_next_line(0, &str))
 	{
-		if (ft_isstrstr(str, "$$$ exec "))
-			ft_get_player(env, str);
+		ft_isstrstr(str, "$$$ exec ") ? ft_get_player(env, str) : 0;
 		if (ft_isstrstr(str, "Plateau"))
 		{
 			ft_get_map_size(env, str);
 			get_next_line(0, &str);
 		}
-		if (env->phase == 1)
-			ft_get_board(env, str);
-		if (ft_isstrstr(str, "Piece"))
-			ft_get_piece_size(env, str);
-		if (env->phase == 2)
-			ft_get_piece(env, str);
-		if (env->phase == 3)
-		{
-			ft_print_update(env);
-			ft_algo(env);
-		}
+		env->phase == 1 ? ft_get_board(env, str) : 0;
+		ft_isstrstr(str, "Piece") ? ft_get_piece_size(env, str) : 0;
+		env->phase == 2 ? ft_get_piece(env, str) : 0;
+		env->phase == 3 ? ft_algo(env) : 0;
+		ft_strdel(&str);
 	}
 	ft_strdel(&str);
 }
 
-int			main(void)
+int				main(void)
 {
 	static t_env	env;
 

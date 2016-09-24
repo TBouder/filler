@@ -6,13 +6,13 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/07/29 17:19:43 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/13 15:21:43 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/24 12:55:17 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "filler.h"
 
-char		**ft_dbmalloc(int x, int y)
+char			**ft_dbmalloc(int x, int y)
 {
 	char	**str;
 	int		i;
@@ -25,6 +25,42 @@ char		**ft_dbmalloc(int x, int y)
 		i++;
 	}
 	return (str);
+}
+
+static void		ft_dbfree(char **str, int y)
+{
+	int		i;
+
+	i = 0;
+	while (i <= y)
+	{
+		ft_strdel(&str[i]);
+		i++;
+	}
+	free(*str);
+	free(str);
+}
+
+static void		ft_dbfree_int(int **nbr, int y)
+{
+	int		i;
+
+	i = 0;
+	while (i < y)
+	{
+		free(nbr[i]);
+		i++;
+	}
+	free(nbr);
+}
+
+void			ft_free_get(t_env *env)
+{
+	ft_dbfree(env->map, MAX_MAP_Y);
+	ft_dbfree(env->piece, MAX_PIECE_Y);
+	ft_dbfree_int(env->fragments, env->nb_fragments);
+	env->map = NULL;
+	env->piece = NULL;
 }
 
 void		ft_print_update(t_env *env)

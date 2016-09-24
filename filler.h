@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/12 19:26:23 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/13 15:21:48 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/24 12:59:06 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,5 +72,6 @@ int				ft_test_fragments(t_env *env, int pos_x, int pos_y);
 */
 void			ft_hori_verti(t_env *env);
 void			ft_choose_direction(t_env *env);
+void			ft_free_get(t_env *env);
 
 #endif
